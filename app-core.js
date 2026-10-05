@@ -134,7 +134,11 @@ function prepareData(){
   state.minDate=dates[0]||'';
   state.maxDate=dates.at(-1)||'';
   state.modelStats=groupBy(state.perfEnriched,r=>r.__model).filter(x=>x.key&&x.key!=='OTRO / SIN CLASIFICAR').sort((a,b)=>b.spend-a.spend);
-  if($('#snapshotDate')) $('#snapshotDate').textContent=state.minDate&&state.maxDate?`${state.minDate} → ${state.maxDate}`:'Snapshot';
+  const periodLabel=state.minDate&&state.maxDate?`${state.minDate} → ${state.maxDate}`:'Snapshot';
+  if($('#snapshotDate')) $('#snapshotDate').textContent=periodLabel;
+  if($('#heroPeriod')) $('#heroPeriod').textContent=periodLabel;
+  if($('#sidebarPeriod')) $('#sidebarPeriod').textContent=periodLabel;
+  if($('#sidebarRows')) $('#sidebarRows').textContent=`${fmtNum.format(state.perfEnriched.length)} filas · ${fmtNum.format(new Set(state.perfEnriched.map(r=>s(get(r,'Ad Set ID')))).size)} Ad Sets · ${fmtNum.format(state.ads.length)} creativos`;
   if($('#heroRows')) $('#heroRows').textContent=fmtNum.format(state.perfEnriched.length);
   if($('#heroAdsets')) $('#heroAdsets').textContent=fmtNum.format(new Set(state.perfEnriched.map(r=>s(get(r,'Ad Set ID')))).size);
   if($('#heroAds')) $('#heroAds').textContent=fmtNum.format(state.ads.length);
