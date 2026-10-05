@@ -19,17 +19,21 @@ function switchSection(id,opts={}){
 
   const titles={
     overview:'Meta performance command center',
+    modelsView:'Performance por modelo',
     audiences:'Audience intelligence',
     campaigns:'Campaign performance',
     creatives:'Creative performance gallery',
+    citiesView:'Inversión por ciudad',
     data:'Data health & coverage'
   };
   $('#pageTitle').textContent=titles[id]||titles.overview;
 
   if(id==='overview') setTimeout(renderOverview,30);
+  if(id==='modelsView') setTimeout(()=>{renderModelsPage();renderModelRail();},30);
   if(id==='audiences') setTimeout(renderAudiences,30);
   if(id==='campaigns') setTimeout(renderCampaigns,30);
   if(id==='creatives') setTimeout(renderCreatives,30);
+  if(id==='citiesView') setTimeout(renderCitiesPage,30);
   if(id==='data') setTimeout(renderHealth,30);
 
   if(opts.scroll!==false){
@@ -45,9 +49,11 @@ function switchSection(id,opts={}){
 function setupNav(){
   const items=[
     ['overview','Overview'],
+    ['modelsView','Modelos'],
     ['audiences','Audiencias'],
     ['campaigns','Campañas'],
     ['creatives','Creatividades'],
+    ['citiesView','Ciudades'],
     ['data','Data Health']
   ];
 
