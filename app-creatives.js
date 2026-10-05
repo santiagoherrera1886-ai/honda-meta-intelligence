@@ -23,5 +23,9 @@ function setupNav(){
     renderAll();
   }));
 }
-setupNav();
+try{
+  setupNav();
+}catch(navError){
+  console.error('Navigation setup error:',navError);
+}
 bootstrapHonda();
