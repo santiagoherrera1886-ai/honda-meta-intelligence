@@ -33,17 +33,19 @@
     </div>
 
     <div class="nav" id="nav">
-      <button class="active" data-section="overview"><span class="nav-icon">◉</span>Overview</button>
+      <button class="active" data-section="overview"><span class="nav-icon">◫</span>Overview</button>
+      <button data-jump="models"><span class="nav-icon">◈</span>Modelos</button>
       <button data-section="audiences"><span class="nav-icon">◎</span>Audiencias</button>
-      <button data-section="campaigns"><span class="nav-icon">▥</span>Campañas</button>
-      <button data-section="creatives"><span class="nav-icon">◇</span>Creatividades</button>
-      <button data-section="data"><span class="nav-icon">⌁</span>Data Health</button>
+      <button data-section="campaigns"><span class="nav-icon">➤</span>Campañas</button>
+      <button data-section="creatives"><span class="nav-icon">▣</span>Creatividades</button>
+      <button data-jump="cities"><span class="nav-icon">⌖</span>Ciudades</button>
+      <button data-section="data"><span class="nav-icon">▱</span>Data Health</button>
     </div>
 
-    <div class="sidebar-bottom">
-      <span class="live-dot"></span><strong> Snapshot integrado</strong>
-      <p>La data ya vive dentro del proyecto. No necesitas cargar Excel.</p>
-      <div class="sidebar-version">Meta Ads · Oct 2025 — Sep 2026</div>
+    <div class="sidebar-bottom premium-sidebar-meta">
+      <div class="side-meta-block"><span>Periodo actual</span><strong id="sidebarPeriod">—</strong></div>
+      <div class="side-meta-block"><span>Data cargada</span><strong><i class="live-dot"></i> Snapshot integrado</strong></div>
+      <div class="side-meta-block"><span>Volumen</span><strong id="sidebarRows">—</strong></div>
     </div>
   </aside>
 
@@ -51,7 +53,7 @@
     <header class="topbar">
       <div>
         <div class="eyebrow">Honda Motos Colombia · Meta Ads</div>
-        <div class="title" id="pageTitle">Performance command center</div>
+        <div class="title" id="pageTitle">Meta performance command center</div>
       </div>
       <div class="top-actions">
         <div class="pill"><span class="status-dot ok"></span><span id="statusText">Snapshot conectado</span></div>
@@ -62,14 +64,10 @@
     <div class="content">
       <section class="hero">
         <div class="hero-copy">
-          <div class="hero-brandline"><img src="https://motocicletas.honda.com.co/images/svg/logo-footer.svg" alt="Honda Motos"><span>META PERFORMANCE INTELLIGENCE</span></div>
-          <h2>Performance que se siente<br><span>como producto Honda.</span></h2>
-          <p>Modelos reales, campañas, audiencias, ciudades configuradas y previews creativos conectados con el performance diario.</p>
-          <div class="hero-stats">
-            <div><b id="heroRows">—</b><span>filas performance</span></div>
-            <div><b id="heroAdsets">—</b><span>Ad Sets</span></div>
-            <div><b id="heroAds">—</b><span>creativos</span></div>
-          </div>
+          <div class="hero-brandline"><span>HONDA MOTOS COLOMBIA</span></div>
+          <h2>Meta performance<br><span>command center</span></h2>
+          <p>Analiza el desempeño de tus campañas en Meta Ads por modelo, audiencia, ciudad y creativo. Data actualizada y lista para la toma de decisiones.</p>
+          <div class="hero-period-pill">◷ <span id="heroPeriod">—</span></div>
         </div>
         <div class="hero-machine">
           <div class="hero-glow"></div>
@@ -81,7 +79,7 @@
         </div>
       </section>
 
-      <section class="models-shell">
+      <section class="models-shell" id="models">
         <div class="section-caption">
           <div>
             <span>MODELOS</span>
@@ -121,27 +119,39 @@
           <div class="kpis" id="kpis"></div>
           <div class="insights" id="insights"></div>
 
-          <div class="grid-2">
-            <div class="panel panel-chart">
+          <div class="overview-premium-grid">
+            <div class="panel panel-chart premium-analytics-panel">
               <div class="panel-head">
-                <div><div class="panel-title">Evolución de inversión y leads</div><div class="panel-note">Performance según filtros activos.</div></div>
-                <select id="trendGranularity" class="compact-select"><option value="day">Día</option><option value="month">Mes</option></select>
+                <div><div class="panel-title">Evolución de inversión, leads y CPL</div><div class="panel-note">Vista ponderada del performance según los filtros activos.</div></div>
+                <select id="trendGranularity" class="compact-select"><option value="month">Mensual</option><option value="day">Diario</option></select>
               </div>
               <div class="chartbox"><canvas id="trendChart"></canvas></div>
             </div>
-            <div class="panel panel-chart">
+
+            <div class="panel city-investment-panel" id="cities">
               <div class="panel-head">
-                <div><div class="panel-title">Mix de audiencias</div><div class="panel-note">Participación de inversión.</div></div>
-                <span class="panel-badge">Spend share</span>
+                <div><div class="panel-title">Inversión por ciudad (targeting)</div><div class="panel-note">Asignación proporcional entre ciudades configuradas.</div></div>
               </div>
-              <div class="chartbox"><canvas id="audienceChart"></canvas></div>
+              <div id="citySpendList" class="city-spend-list"></div>
+            </div>
+
+            <div class="panel city-map-panel">
+              <div class="panel-head">
+                <div><div class="panel-title">Mapa de inversión por ciudad</div><div class="panel-note">Vista indicativa del peso de inversión.</div></div>
+              </div>
+              <div id="cityMap" class="city-map"></div>
             </div>
           </div>
 
-          <div class="grid-3">
+          <div class="grid-3 premium-lower-grid">
             <div class="panel"><div class="panel-head"><div><div class="panel-title">Performance por modelo</div><div class="panel-note">Leads por modelo.</div></div></div><div class="chartbox sm"><canvas id="modelChart"></canvas></div></div>
             <div class="panel"><div class="panel-head"><div><div class="panel-title">Top intereses</div><div class="panel-note">Inversión asociada; no aditiva.</div></div></div><div class="chartbox sm"><canvas id="interestChart"></canvas></div></div>
-            <div class="panel"><div class="panel-head"><div><div class="panel-title">Objetivos / entrega</div><div class="panel-note">Mix por optimization goal.</div></div></div><div class="chartbox sm"><canvas id="deliveryChart"></canvas></div></div>
+            <div class="panel"><div class="panel-head"><div><div class="panel-title">Mix de audiencias</div><div class="panel-note">Participación de inversión.</div></div></div><div class="chartbox sm"><canvas id="audienceChart"></canvas></div></div>
+          </div>
+
+          <div class="panel premium-delivery-panel">
+            <div class="panel-head"><div><div class="panel-title">Objetivos / tipo de entrega</div><div class="panel-note">Distribución de inversión por optimization goal.</div></div></div>
+            <div class="chartbox sm"><canvas id="deliveryChart"></canvas></div>
           </div>
         </section>
 
