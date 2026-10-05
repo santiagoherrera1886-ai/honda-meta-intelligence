@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Honda Meta Intelligence</title>
+  <meta name="description" content="Dashboard interactivo de performance, audiencias y creatividades de Meta Ads para Honda." />
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<div class="loading" id="loading"><div class="loader-card"><div class="spinner"></div><b>Procesando data de Meta</b><div style="color:#888;font-size:12px;margin-top:6px">Cruzo performance, segmentación y anuncios localmente.</div></div></div>
+<div class="mobile-nav" id="mobileNav"></div>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brandmark">H</div><div><h1>Honda Meta<br>Intelligence</h1><small>Audience & Creative Lab</small></div></div>
+    <div class="nav" id="nav">
+      <button class="active" data-section="overview"><span class="dot"></span>Overview</button>
+      <button data-section="audiences"><span class="dot"></span>Audiencias</button>
+      <button data-section="campaigns"><span class="dot"></span>Campañas</button>
+      <button data-section="creatives"><span class="dot"></span>Creatividades</button>
+      <button data-section="data"><span class="dot"></span>Data Health</button>
+    </div>
+    <div class="sidebar-bottom"><strong>Privacidad primero.</strong><br>El Excel se procesa en tu navegador. No se sube a ningún servidor de este dashboard.</div>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <div><div class="eyebrow">Honda Motos Colombia</div><div class="title" id="pageTitle">Meta performance command center</div></div>
+      <div class="top-actions"><div class="pill"><span class="status-dot" id="statusDot"></span><span id="statusText">Sin archivo</span></div><label for="fileInput" class="btn btn-dark" style="cursor:pointer">Cargar Excel</label></div>
+    </header>
+    <div class="content">
+      <input type="file" id="fileInput" accept=".xlsx,.xls" class="hidden">
+      <section class="upload-shell" id="uploadShell">
+        <div class="upload-card" id="dropZone"><div class="eyebrow">DATA SOURCE</div><h2>Sube el Excel de Meta y conviértelo en un dashboard de decisión.</h2><p>Lee las hojas de performance diario, segmentaciones, anuncios y performance creativo. Cruza por Campaign ID, Ad Set ID y Ad ID, sin exponer tu token ni la data fuera del navegador.</p><div class="upload-row"><label for="fileInput" class="btn btn-red" style="cursor:pointer">Seleccionar archivo</label><span class="privacy">o arrástralo aquí · .xlsx</span></div></div>
+        <div class="data-card"><div><h3>Estado de la base</h3><div class="data-big" id="dataBig">Esperando archivo</div></div><div class="data-meta"><span><b>Periodo</b><i id="metaPeriod">—</i></span><span><b>Ad Sets con performance</b><i id="metaAdsets">—</i></span><span><b>Anuncios</b><i id="metaAds">—</i></span><span><b>Segmentaciones</b><i id="metaSeg">—</i></span></div></div>
+      </section>
+
+      <div id="dashboard" class="hidden">
+        <div class="filters">
+          <div class="field"><label>Modelo</label><select id="fModel"></select></div>
+          <div class="field"><label>Campaña</label><select id="fCampaign"></select></div>
+          <div class="field"><label>Tipo audiencia</label><select id="fAudience"></select></div>
+          <div class="field"><label>Tipo de entrega</label><select id="fDelivery"></select></div>
+          <div class="field"><label>Desde</label><input type="date" id="fFrom"></div>
+          <div class="field"><label>Hasta</label><input type="date" id="fTo"></div>
+          <div class="field"><label>Buscar interés</label><input type="search" id="fInterest" placeholder="Honda, motos, delivery…"></div>
+        </div>
+        <div class="segment-pills" id="segmentPills"><button class="segpill active" data-segment="Todos">Todos</button><button class="segpill" data-segment="RMK">RMK</button><button class="segpill" data-segment="LKL">LKL</button><button class="segpill" data-segment="BBDD">BBDD</button><button class="segpill" data-segment="Intereses">Intereses</button><button class="segpill" data-segment="Broad">Broad</button></div>
+
+        <section id="overview" class="section active">
+          <div class="kpis" id="kpis"></div>
+          <div class="insights" id="insights"></div>
+          <div class="grid-2">
+            <div class="panel"><div class="panel-head"><div><div class="panel-title">Evolución de inversión y leads</div><div class="panel-note">Performance agregada según los filtros activos.</div></div><select id="trendGranularity" class="btn btn-ghost"><option value="day">Día</option><option value="month">Mes</option></select></div><div class="chartbox"><canvas id="trendChart"></canvas></div></div>
+            <div class="panel"><div class="panel-head"><div><div class="panel-title">Mix de audiencias</div><div class="panel-note">Participación de inversión por tipo de audiencia.</div></div><span class="panel-badge">Spend share</span></div><div class="chartbox"><canvas id="audienceChart"></canvas></div></div>
+          </div>
+          <div class="grid-3">
+            <div class="panel"><div class="panel-head"><div><div class="panel-title">Performance por modelo</div><div class="panel-note">Leads por modelo en el periodo.</div></div></div><div class="chartbox sm"><canvas id="modelChart"></canvas></div></div>
+            <div class="panel"><div class="panel-head"><div><div class="panel-title">Top intereses</div><div class="panel-note">Inversión asociada; no es aditiva entre intereses.</div></div></div><div class="chartbox sm"><canvas id="interestChart"></canvas></div></div>
+            <div class="panel"><div class="panel-head"><div><div class="panel-title">Objetivos / entrega</div><div class="panel-note">Distribución de inversión por optimization goal.</div></div></div><div class="chartbox sm"><canvas id="deliveryChart"></canvas></div></div>
+          </div>
+        </section>
+
+        <section id="audiences" class="section">
+          <div class="kpis" id="audienceKpis"></div>
+          <div class="grid-2"><div class="panel"><div class="panel-head"><div><div class="panel-title">Audiencias por eficiencia</div><div class="panel-note">Comparación de inversión, leads, CPL y CTR.</div></div></div><div class="chartbox"><canvas id="audienceEfficiencyChart"></canvas></div></div><div class="panel"><div class="panel-head"><div><div class="panel-title">Edad y geografía configurada</div><div class="panel-note">Configuración actual de los Ad Sets cruzados.</div></div></div><div id="geoSummary"></div></div></div>
+          <div class="panel"><div class="panel-head"><div><div class="panel-title">Explorador de segmentaciones</div><div class="panel-note">Ad Set → targeting → performance del periodo filtrado.</div></div><span class="panel-badge" id="segCountBadge">0 ad sets</span></div><div class="table-wrap"><table class="table"><thead><tr><th>Modelo</th><th>Campaña / Ad Set</th><th>Audiencia</th><th>Edad</th><th>Intereses / Behaviors</th><th>Geo</th><th class="metric">Spend</th><th class="metric">Leads</th><th class="metric">CPL</th><th class="metric">CTR</th></tr></thead><tbody id="segTable"></tbody></table></div></div>
+        </section>
+
+        <section id="campaigns" class="section">
+          <div class="kpis" id="campaignKpis"></div>
+          <div class="grid-2"><div class="panel"><div class="panel-head"><div><div class="panel-title">Campañas por inversión</div><div class="panel-note">Top campañas dentro de los filtros.</div></div></div><div class="chartbox"><canvas id="campaignSpendChart"></canvas></div></div><div class="panel"><div class="panel-head"><div><div class="panel-title">Campañas por leads</div><div class="panel-note">Ranking de volumen y eficiencia.</div></div></div><div class="chartbox"><canvas id="campaignLeadChart"></canvas></div></div></div>
+          <div class="panel"><div class="panel-head"><div><div class="panel-title">Detalle de campañas</div><div class="panel-note">Cálculo ponderado: CPL = inversión / leads; CTR = clicks / impresiones.</div></div></div><div class="table-wrap"><table class="table"><thead><tr><th>Modelo</th><th>Campaña</th><th>Entrega</th><th class="metric">Spend</th><th class="metric">Leads</th><th class="metric">CPL</th><th class="metric">Reach*</th><th class="metric">Clicks</th><th class="metric">CTR</th><th class="metric">CPC</th></tr></thead><tbody id="campaignTable"></tbody></table></div></div>
+        </section>
+
+        <section id="creatives" class="section">
+          <div class="panel" style="margin-bottom:14px"><div class="panel-head"><div><div class="panel-title">Creative Performance Gallery</div><div class="panel-note">Miniatura, modelo, performance agregada del anuncio y acceso directo al preview de Meta.</div></div><select id="creativeSort" class="btn btn-ghost"><option value="spend">Ordenar por inversión</option><option value="leads">Ordenar por leads</option><option value="ctr">Ordenar por CTR</option><option value="cpl">Mejor CPL</option></select></div><div class="creative-grid" id="creativeGrid"></div><div class="empty hidden" id="creativeEmpty"><b>No encontré creatividades para estos filtros.</b>Ajusta modelo, campaña o audiencia.</div></div>
+        </section>
+
+        <section id="data" class="section">
+          <div class="grid-3" id="healthCards"></div>
+          <div class="panel"><div class="panel-head"><div><div class="panel-title">Cobertura del modelo de datos</div><div class="panel-note">Chequeos para entender qué tan completa está la extracción.</div></div></div><div class="table-wrap"><table class="table"><thead><tr><th>Chequeo</th><th>Estado</th><th>Detalle</th></tr></thead><tbody id="healthTable"></tbody></table></div></div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="./app-core.js"></script>
+<script src="./app-overview.js"></script>
+<script src="./app-detail.js"></script>
+<script src="./app-creatives.js"></script>
+</body>
+</html>
