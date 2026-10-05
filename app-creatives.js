@@ -7,7 +7,10 @@ function short(v,len=38){v=s(v);return v.length>len?v.slice(0,len-1)+'…':v}
 function escapeHtml(v){return s(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
 function escapeAttr(v){return escapeHtml(v)}
 function switchSection(id,opts={}){
-  $$('.section').forEach(x=>x.classList.toggle('active',x.id===id));
+  $('.section').forEach(x=>x.classList.toggle('active',x.id===id));
+  if(opts.hash!==false){
+    history.replaceState(null,'',`#${id}`);
+  }
 
   // Sidebar state
   $$('[data-section], [data-jump]').forEach(x=>x.classList.remove('active'));
@@ -61,8 +64,12 @@ function setupNav(){
     `<button data-section="${id}" class="${i?'':'active'}">${l}</button>`
   ).join('');
 
-  $$('[data-section]').forEach(b=>b.addEventListener('click',()=>{
+  $('[data-section]').forEach(b=>b.addEventListener('click',()=>{
     switchSection(b.dataset.section);
+  }));
+
+  $('[data-open-section]').forEach(b=>b.addEventListener('click',()=>{
+    switchSection(b.dataset.openSection);
   }));
 
   $$('[data-jump]').forEach(b=>b.addEventListener('click',()=>{
@@ -86,4 +93,8 @@ function setupNav(){
   }));
 }
 
+window.addEventListener('hashchange',()=>{
+  const id=location.hash.replace('#','');
+  if(id&&document.getElementById(id)) switchSection(id,{hash:false});
+});
 bootstrapHonda();
