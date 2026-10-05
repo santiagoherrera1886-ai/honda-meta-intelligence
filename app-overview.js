@@ -61,10 +61,10 @@ function renderKpis(el,rows){
 }
 
 function renderOverview(){
+  renderOverviewCityFeature();
   renderKpis($('#kpis'),state.current);
   renderInsights();
   renderTrend();
-  renderCityPanels();
   renderModelChart();
   renderInterestChart();
   renderAudienceChart();
@@ -192,6 +192,74 @@ function renderCityPanels(){
         <path class="colombia-shape" d="M45 5 L57 11 L67 20 L71 31 L66 40 L69 50 L64 61 L59 72 L53 82 L45 94 L37 87 L32 76 L28 64 L31 52 L27 42 L31 30 L36 19 Z"/>
         ${pts}
       </svg>`;
+  }
+}
+
+
+function overviewCityKpi(icon,label,value,sub){
+  return `<article class="overview-city-kpi">
+    <div class="overview-city-kpi-icon">${icon}</div>
+    <div><span>${label}</span><strong>${value}</strong><small>${sub}</small></div>
+  </article>`;
+}
+
+function renderOverviewCityFeature(){
+  const cities=cityAllocations(state.current);
+  const total=cities.reduce((a,x)=>a+x.spend,0);
+  const active=cities.filter(x=>x.spend>0);
+  const top=active[0]||{key:'—',spend:0};
+  const topShare=total?top.spend/total*100:0;
+  const max=top.spend||1;
+
+  if($('#overviewCityKpis')){
+    $('#overviewCityKpis').innerHTML=[
+      overviewCityKpi('⌖','Top ciudad',escapeHtml(top.key),`${fmt1.format(topShare)}% de la inversión asociada`),
+      overviewCityKpi('▥','Cobertura ciudades',`${active.length} / ${state.snapshotCities.length||active.length}`,'Ciudades con inversión activa'),
+      overviewCityKpi('◉','Inversión total asociada',fmtMoney.format(total),'Periodo y filtros seleccionados')
+    ].join('');
+  }
+
+  if($('#overviewCityCount')) $('#overviewCityCount').textContent=`${active.length} ciudades`;
+
+  if($('#overviewCityRanking')){
+    $('#overviewCityRanking').innerHTML=active.slice(0,5).map((x,i)=>{
+      const share=total?x.spend/total*100:0;
+      return `<div class="overview-rank-row">
+        <span class="overview-rank-num">${i+1}</span>
+        <div class="overview-rank-city">
+          <b>${escapeHtml(x.key)}</b>
+          <div class="overview-rank-bar"><i style="width:${Math.max(3,x.spend/max*100)}%"></i></div>
+        </div>
+        <strong>${fmtMoney.format(x.spend)}</strong>
+        <span>${fmt1.format(share)}%</span>
+      </div>`;
+    }).join('')||'<div class="empty">Sin ciudades para estos filtros.</div>';
+  }
+
+  if($('#overviewCityMap')){
+    const points=active.map((x,i)=>{
+      const pos=CITY_MAP_POS[normalizeCityName(x.key)];
+      if(!pos)return '';
+      const size=10+Math.round(Math.sqrt(x.spend/max)*30);
+      const label=i<5
+        ? `<div class="overview-map-label"><b>${escapeHtml(x.key)}</b><span>${fmtMoney.format(x.spend)}</span></div>`
+        : '';
+      return `<div class="overview-map-pin" style="left:${pos[0]}%;top:${pos[1]}%;--bubble:${size}px">
+        <i></i>${label}
+      </div>`;
+    }).join('');
+
+    $('#overviewCityMap').innerHTML=`
+      <div class="overview-map-canvas">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/67/Departments_of_colombia.svg"
+          class="overview-colombia-map"
+          alt="Mapa de departamentos de Colombia"
+          loading="lazy">
+        <div class="overview-map-pins">${points}</div>
+        <div class="overview-map-legend">
+          <span>Menor inversión</span><b></b><b></b><b></b><b></b><span>Mayor inversión</span>
+        </div>
+      </div>`;
   }
 }
 
