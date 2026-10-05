@@ -308,7 +308,7 @@ function selectHondaModel(model){
 }
 
 function bindModelCards(){
-  $('.model-card').forEach(btn=>{
+  document.querySelectorAll('.model-card').forEach(btn=>{
     btn.addEventListener('click',()=>{
       selectHondaModel(btn.dataset.model);
     });
