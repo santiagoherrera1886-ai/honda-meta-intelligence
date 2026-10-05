@@ -299,12 +299,20 @@ function modelCardMarkup(m,i,current){
     <div class="official-chip">HONDA · MODELO REAL</div>
   </button>`;
 }
+function selectHondaModel(model){
+  const select=$('#fModel');
+  if(!select)return;
+  select.value=model||'';
+  renderAll();
+  renderModelRail();
+}
+
 function bindModelCards(){
-  $('.model-card').forEach(btn=>btn.addEventListener('click',()=>{
-    $('#fModel').value=btn.dataset.model;
-    renderAll();
-    renderModelRail();
-  }));
+  $('.model-card').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      selectHondaModel(btn.dataset.model);
+    });
+  });
 }
 function renderModelRail(){
   const current=$('#fModel').value;
