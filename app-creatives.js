@@ -97,4 +97,26 @@ window.addEventListener('hashchange',()=>{
   const id=location.hash.replace('#','');
   if(id&&document.getElementById(id)) switchSection(id,{hash:false});
 });
+
+try{
+  setupNav();
+}catch(navError){
+  console.error('Navigation setup error:',navError);
+}
+
+// Extra delegated fallback: even if a direct listener fails, sidebar buttons still work.
+document.addEventListener('click',e=>{
+  const sectionButton=e.target.closest('[data-section]');
+  if(sectionButton){
+    e.preventDefault();
+    switchSection(sectionButton.dataset.section);
+    return;
+  }
+  const openButton=e.target.closest('[data-open-section]');
+  if(openButton){
+    e.preventDefault();
+    switchSection(openButton.dataset.openSection);
+  }
+});
+
 bootstrapHonda();
