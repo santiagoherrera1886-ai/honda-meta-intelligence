@@ -343,3 +343,46 @@ body{
   .hero-bike{height:210px}
   .premium-model{min-width:195px;height:220px}
 }
+
+
+/* === ROBUST MODEL IMAGE FALLBACK === */
+.bike-fallback{
+  position:absolute;
+  inset:12% 8%;
+  z-index:3;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:4px;
+  border-radius:22px;
+  background:
+    radial-gradient(circle at 50% 20%,rgba(228,5,33,.18),transparent 42%),
+    linear-gradient(145deg,#fff,#f5f3f1);
+  border:1px solid rgba(228,5,33,.10);
+  color:#111;
+  text-align:center;
+}
+.bike-fallback.show{display:flex}
+.bike-fallback span{
+  color:#e40521;
+  font-size:9px;
+  font-weight:950;
+  letter-spacing:.16em;
+}
+.bike-fallback strong{
+  font-size:18px;
+  letter-spacing:-.03em;
+}
+.bike-fallback small{
+  color:#8a8a8a;
+  font-size:9px;
+}
+.real-bike-hero .bike-fallback{
+  inset:12% 10%;
+  background:
+    radial-gradient(circle at 50% 25%,rgba(228,5,33,.35),transparent 40%),
+    linear-gradient(145deg,#171717,#070707);
+  color:white;
+  border-color:rgba(255,255,255,.08);
+}
