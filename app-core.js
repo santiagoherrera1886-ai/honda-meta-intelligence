@@ -157,7 +157,8 @@ function initFilters(){
   $('#fInterest').addEventListener('input',debounce(renderAll,220));
   $('#trendGranularity').addEventListener('change',renderOverview);
   $('#creativeSort').addEventListener('change',renderCreatives);
-  $('#clearModel').addEventListener('click',()=>{$('#fModel').value='';renderAll();renderModelRail();});
+  if($('#clearModel')) $('#clearModel').addEventListener('click',()=>{$('#fModel').value='';renderAll();renderModelRail();});
+  if($('#resetModelPage')) $('#resetModelPage').addEventListener('click',()=>{$('#fModel').value='';renderAll();renderModelRail();});
 }
 function debounce(fn,ms){let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms)}}
 function filterData(){
@@ -184,9 +185,11 @@ function groupBy(rows,keyFn){const m=new Map();rows.forEach(r=>{const k=keyFn(r)
 function renderAll(){
   filterData();
   renderOverview();
+  if(typeof renderModelsPage==='function') renderModelsPage();
   renderAudiences();
   renderCampaigns();
   renderCreatives();
+  if(typeof renderCitiesPage==='function') renderCitiesPage();
   renderHealth();
   updateHero();
 }
@@ -281,29 +284,35 @@ function bikeMedia(name,hero=false){
     <div class="bike-specular"></div>
   </div>`;
 }
-function renderModelRail(){
-  const current=$('#fModel').value;
-  const models=(state.modelStats||[]).slice(0,12);
-  $('#modelRail').innerHTML=models.map((m,i)=>{
-    const asset=modelAsset(m.key);
-    return `<button class="model-card premium-model ${current===m.key?'active':''}" data-model="${escapeAttr(m.key)}" style="--delay:${i*20}ms">
-      <div class="model-card-top">
-        <span>${escapeHtml(asset.label||m.key)}</span>
-        <small>${fmtMoney.format(m.spend)}</small>
-      </div>
-      <div class="model-art">${bikeMedia(m.key,false)}</div>
-      <div class="model-card-foot">
-        <b>${fmtNum.format(m.leads)}</b><span>leads</span>
-        <i>${m.leads?fmtMoney.format(m.cpl):'—'} CPL</i>
-      </div>
-      <div class="official-chip">HONDA · MODELO REAL</div>
-    </button>`;
-  }).join('');
-  $$('.model-card').forEach(btn=>btn.addEventListener('click',()=>{
+function modelCardMarkup(m,i,current){
+  const asset=modelAsset(m.key);
+  return `<button class="model-card premium-model ${current===m.key?'active':''}" data-model="${escapeAttr(m.key)}" style="--delay:${i*20}ms">
+    <div class="model-card-top">
+      <span>${escapeHtml(asset.label||m.key)}</span>
+      <small>${fmtMoney.format(m.spend)}</small>
+    </div>
+    <div class="model-art">${bikeMedia(m.key,false)}</div>
+    <div class="model-card-foot">
+      <b>${fmtNum.format(m.leads)}</b><span>leads</span>
+      <i>${m.leads?fmtMoney.format(m.cpl):'—'} CPL</i>
+    </div>
+    <div class="official-chip">HONDA · MODELO REAL</div>
+  </button>`;
+}
+function bindModelCards(){
+  $('.model-card').forEach(btn=>btn.addEventListener('click',()=>{
     $('#fModel').value=btn.dataset.model;
     renderAll();
     renderModelRail();
   }));
+}
+function renderModelRail(){
+  const current=$('#fModel').value;
+  const models=(state.modelStats||[]).slice(0,12);
+  const markup=models.map((m,i)=>modelCardMarkup(m,i,current)).join('');
+  if($('#modelRail')) $('#modelRail').innerHTML=markup;
+  if($('#modelRailPage')) $('#modelRailPage').innerHTML=markup;
+  bindModelCards();
 }
 function updateHero(){
   const selected=$('#fModel').value;
