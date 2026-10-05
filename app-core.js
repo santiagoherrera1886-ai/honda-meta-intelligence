@@ -187,39 +187,89 @@ function renderAll(){
   updateHero();
 }
 
-function modelType(name){
-  if(/PCX|DIO|ADV/i.test(name))return 'scooter';
-  if(/NX|XR|XRE/i.test(name))return 'adventure';
-  if(/WAVE|DREAM|NAVI/i.test(name))return 'commuter';
-  return 'street';
+const MODEL_ASSETS={
+  'CB100':{
+    img:'https://motocicletas.honda.com.co/images/cms/cb-100-gris.png',
+    label:'CB 100'
+  },
+  'CB125F':{
+    img:'https://motos.honda.com.co/_next/image?q=100&url=https%3A%2F%2Fd3lewjhzzgclom.cloudfront.net%2Fsites%2Fdefault%2Ffiles%2Fcsv_import%2Fimages%2Fhonda-cb125f-20-std-rojo1_3.png&w=3840',
+    label:'CB 125F'
+  },
+  'PCX160':{
+    img:'https://motocicletas.honda.com.co/images/cms/Azul-8194f.png',
+    label:'PCX 160 ABS'
+  },
+  'CB300F':{
+    img:'https://motocicletas.honda.com.co/images/cms/Nueva-CB-300F-rojo.png',
+    label:'CB 300F'
+  },
+  'XR150L':{
+    img:'https://motos.honda.com.co/_next/image?q=100&url=https%3A%2F%2Fd3lewjhzzgclom.cloudfront.net%2Fsites%2Fdefault%2Ffiles%2Fcsv_import%2Fimages%2FXR150L-20-blanco-version_3.png&w=3840',
+    label:'XR 150L'
+  },
+  'XR190L':{
+    img:'https://tienda.honda.com.co/dw/image/v2/BFKT_PRD/on/demandware.static/-/Sites-FanalcaSA_CO-catalog/default/dw41660fb4/images/large/nueva-honda-xr190l-20-ecommerce.jpg?sh=550&sm=fit&sw=550',
+    label:'XR 190L'
+  },
+  'WAVE':{
+    img:'https://motos.honda.com.co/_next/image?q=100&url=https%3A%2F%2Fd3lewjhzzgclom.cloudfront.net%2Fsites%2Fdefault%2Ffiles%2Fcsv_import%2Fimages%2Fnueva-honda-wave-110-negra3_3.png&w=3840',
+    label:'WAVE 110S'
+  },
+  'DIO DLX':{
+    img:'https://motocicletas.honda.com.co/images/cms/nueva-dio-dlx-gris.png',
+    label:'DIO LED DLX'
+  },
+  'DIO':{
+    img:'https://motocicletas.honda.com.co/images/cms/nueva-dio-dlx-gris.png',
+    label:'DIO'
+  }
+};
+
+function modelAsset(name){
+  return MODEL_ASSETS[name]||MODEL_ASSETS['CB300F'];
 }
-function bikeSvg(name){
-  const type=modelType(name);
-  const body=type==='scooter'
-    ?'M74 64 C92 43 125 37 158 43 L183 62 L157 73 L117 72 L98 82 L74 78 Z'
-    :type==='adventure'
-    ?'M70 67 L105 47 L151 45 L178 58 L156 70 L119 66 L96 82 L70 78 Z'
-    :type==='commuter'
-    ?'M75 65 L103 53 L148 52 L172 62 L151 70 L112 68 L94 81 L72 77 Z'
-    :'M72 66 L105 49 L151 47 L180 60 L155 71 L114 69 L93 82 L70 78 Z';
-  const tank=type==='scooter'
-    ?'<path d="M120 43 C139 36 158 39 170 50 L154 61 L127 59 Z" fill="url(#redg)"/>'
-    :'<path d="M111 45 C126 35 151 36 164 48 L151 58 L119 57 Z" fill="url(#redg)"/>';
-  const wind=(type==='adventure'||type==='scooter')?'<path d="M165 39 L176 57 L164 55 Z" fill="rgba(190,210,225,.65)" stroke="rgba(255,255,255,.8)" stroke-width="1"/>':'';
-  return `<svg viewBox="0 0 240 120" role="img" aria-label="${escapeAttr(name)} render 3D estilizado"><defs><linearGradient id="redg" x1="0" x2="1"><stop offset="0" stop-color="#ff2941"/><stop offset=".55" stop-color="#e40521"/><stop offset="1" stop-color="#8e0013"/></linearGradient><linearGradient id="metal" x1="0" x2="1"><stop offset="0" stop-color="#272727"/><stop offset=".5" stop-color="#777"/><stop offset="1" stop-color="#111"/></linearGradient><filter id="sh"><feDropShadow dx="0" dy="8" stdDeviation="7" flood-color="#000" flood-opacity=".35"/></filter></defs><ellipse cx="122" cy="100" rx="94" ry="9" fill="rgba(0,0,0,.16)"/><g filter="url(#sh)"><circle cx="67" cy="84" r="25" fill="#111"/><circle cx="67" cy="84" r="16" fill="#d7d7d7"/><circle cx="67" cy="84" r="7" fill="#444"/><circle cx="180" cy="84" r="25" fill="#111"/><circle cx="180" cy="84" r="16" fill="#d7d7d7"/><circle cx="180" cy="84" r="7" fill="#444"/><path d="M67 83 L101 58 L137 84 L180 84" fill="none" stroke="url(#metal)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><path d="M112 58 L91 84 M114 59 L146 84" fill="none" stroke="#555" stroke-width="5" stroke-linecap="round"/><path d="${body}" fill="url(#redg)" stroke="rgba(255,255,255,.22)" stroke-width="1.3"/>${tank}<path d="M104 46 L143 45" stroke="#171717" stroke-width="7" stroke-linecap="round"/><path d="M169 58 L177 35 L192 31" stroke="#333" stroke-width="5" stroke-linecap="round" fill="none"/><path d="M190 31 L203 33" stroke="#222" stroke-width="3" stroke-linecap="round"/>${wind}<circle cx="178" cy="59" r="6" fill="#f6f2d8"/></g></svg>`;
+function bikeMedia(name,hero=false){
+  const asset=modelAsset(name);
+  return `<div class="real-bike ${hero?'real-bike-hero':''}">
+    <div class="bike-orbit"></div>
+    <div class="bike-stage"></div>
+    <img src="${escapeAttr(asset.img)}" alt="Honda ${escapeAttr(asset.label)}" loading="${hero?'eager':'lazy'}"
+      onerror="this.classList.add('bike-image-error')">
+    <div class="bike-specular"></div>
+  </div>`;
 }
 function renderModelRail(){
   const current=$('#fModel').value;
   const models=(state.modelStats||[]).slice(0,12);
-  $('#modelRail').innerHTML=models.map((m,i)=>`<button class="model-card ${current===m.key?'active':''}" data-model="${escapeAttr(m.key)}" style="--delay:${i*20}ms"><div class="model-card-top"><span>${escapeHtml(m.key)}</span><small>${fmtMoney.format(m.spend)}</small></div><div class="model-art">${bikeSvg(m.key)}</div><div class="model-card-foot"><b>${fmtNum.format(m.leads)}</b><span>leads</span><i>${m.leads?fmtMoney.format(m.cpl):'—'} CPL</i></div></button>`).join('');
-  $('.model-card').forEach(btn=>btn.addEventListener('click',()=>{$('#fModel').value=btn.dataset.model;renderAll();renderModelRail();}));
+  $('#modelRail').innerHTML=models.map((m,i)=>{
+    const asset=modelAsset(m.key);
+    return `<button class="model-card premium-model ${current===m.key?'active':''}" data-model="${escapeAttr(m.key)}" style="--delay:${i*20}ms">
+      <div class="model-card-top">
+        <span>${escapeHtml(asset.label||m.key)}</span>
+        <small>${fmtMoney.format(m.spend)}</small>
+      </div>
+      <div class="model-art">${bikeMedia(m.key,false)}</div>
+      <div class="model-card-foot">
+        <b>${fmtNum.format(m.leads)}</b><span>leads</span>
+        <i>${m.leads?fmtMoney.format(m.cpl):'—'} CPL</i>
+      </div>
+      <div class="official-chip">HONDA · MODELO REAL</div>
+    </button>`;
+  }).join('');
+  $$('.model-card').forEach(btn=>btn.addEventListener('click',()=>{
+    $('#fModel').value=btn.dataset.model;
+    renderAll();
+    renderModelRail();
+  }));
 }
 function updateHero(){
   const selected=$('#fModel').value;
   const top=groupBy(state.current,r=>r.__model).filter(x=>x.key!=='OTRO / SIN CLASIFICAR').sort((a,b)=>b.spend-a.spend)[0];
-  const display=selected||top?.key||'PCX160';
-  $('#heroModelName').textContent=selected?display:'PORTAFOLIO HONDA';
-  $('#heroBike').innerHTML=bikeSvg(display);
+  const display=selected||top?.key||'CB300F';
+  const asset=modelAsset(display);
+  $('#heroModelName').textContent=selected?(asset.label||display):'PORTAFOLIO HONDA';
+  $('#heroBike').innerHTML=bikeMedia(display,true);
 }
 async function bootstrapHonda(){
   try{
