@@ -1,35 +1,37 @@
 # Honda Meta Intelligence
 
-Dashboard web interactivo para analizar performance, segmentaciones y creatividades de Meta Ads para Honda Motos Colombia.
+Dashboard web para analizar performance, segmentaciones y creatividades de Meta Ads de Honda Motos Colombia.
 
-## Qué analiza
+## Estado actual
 
-- Performance por modelo de moto, campaña y conjunto de anuncios.
-- Día, mes y periodo personalizado.
-- Inversión, leads, CPL, alcance, impresiones, frecuencia, clicks, CTR, CPC, CPM, LPV, CVR y LPV Rate.
-- Audiencias: RMK, LKL, BBDD, intereses, Broad y Advantage.
-- Intereses, behaviors, cargos, edad, género y geografía configurada.
-- Galería de anuncios con thumbnail, métricas, preview de Meta e Instagram cuando existe.
-- Data Health para revisar cobertura de segmentaciones, creativos y cruces por ID.
+La data ya está integrada dentro del proyecto como snapshot optimizado, por lo que el usuario final **no necesita cargar un Excel** para usar el dashboard.
 
-## Cómo usar
+## Incluye
 
-1. Abre el dashboard.
-2. Pulsa **Cargar Excel**.
-3. Selecciona el archivo generado por el extractor de Meta.
-4. El dashboard espera estas hojas cuando estén disponibles:
-   - META_PERFORMANCE_DIA
-   - META_SEGMENTACIONES
-   - META_ANUNCIOS
-   - META_ADS_PERFORMANCE
-5. Usa los filtros de modelo, campaña, audiencia, entrega, fecha e intereses.
+- Filtro por modelo de moto.
+- Selector visual de modelos con renders 3D estilizados.
+- Filtro por ciudad configurada en el targeting del Ad Set.
+- Filtro por campaña, tipo de audiencia, tipo de entrega y fechas.
+- RMK, LKL, BBDD, Intereses y Broad.
+- Inversión, leads, CPL, impresiones, alcance diario, frecuencia proxy, clicks, CTR, CPC, CPM, CVR y LPV Rate.
+- Explorador de segmentaciones.
+- Intereses, behaviors, edad, género y ciudades.
+- Ranking de campañas.
+- Galería creativa con thumbnail y preview de Meta cuando está disponible.
+- Data Health.
 
-## Privacidad
+## Data incluida
 
-El Excel se procesa localmente en el navegador. Este dashboard estático no sube el archivo a un servidor.
+Snapshot actual del archivo de Meta:
+- Periodo: octubre 2025 a septiembre 2026.
+- Performance diario integrado.
+- Segmentaciones de los Ad Sets con performance.
+- Creativos priorizados por inversión.
 
-## Nota de métricas
+## Nota sobre ciudad
 
-El alcance diario no es aditivo entre fechas: una misma persona puede aparecer en varios días. Por eso los acumulados se muestran como **Alcance diario*** y la frecuencia agregada como un proxy.
+El filtro de ciudad representa la **ciudad configurada en el targeting del Ad Set**. No debe interpretarse como un breakdown de entrega real por ciudad.
 
-Los previews dependen de las URLs devueltas por Meta; algunos enlaces pueden expirar o requerir sesión iniciada en Meta.
+## Nota sobre alcance
+
+El alcance diario no es aditivo entre fechas. Una misma persona puede aparecer en más de un día, por lo que el acumulado se presenta como **Alcance diario*** y la frecuencia agregada como proxy.
