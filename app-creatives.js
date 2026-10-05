@@ -7,7 +7,7 @@ function short(v,len=38){v=s(v);return v.length>len?v.slice(0,len-1)+'…':v}
 function escapeHtml(v){return s(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
 function escapeAttr(v){return escapeHtml(v)}
 function switchSection(id,opts={}){
-  $('.section').forEach(x=>x.classList.toggle('active',x.id===id));
+  $$('.section').forEach(x=>x.classList.toggle('active',x.id===id));
   if(opts.hash!==false){
     history.replaceState(null,'',`#${id}`);
   }
@@ -31,13 +31,19 @@ function switchSection(id,opts={}){
   };
   $('#pageTitle').textContent=titles[id]||titles.overview;
 
-  if(id==='overview') setTimeout(renderOverview,30);
-  if(id==='modelsView') setTimeout(()=>{renderModelsPage();renderModelRail();},30);
-  if(id==='audiences') setTimeout(renderAudiences,30);
-  if(id==='campaigns') setTimeout(renderCampaigns,30);
-  if(id==='creatives') setTimeout(renderCreatives,30);
-  if(id==='citiesView') setTimeout(renderCitiesPage,30);
-  if(id==='data') setTimeout(renderHealth,30);
+  setTimeout(()=>{
+    try{
+      if(id==='overview') renderOverview();
+      if(id==='modelsView'){ renderModelsPage(); renderModelRail(); }
+      if(id==='audiences') renderAudiences();
+      if(id==='campaigns') renderCampaigns();
+      if(id==='creatives') renderCreatives();
+      if(id==='citiesView') renderCitiesPage();
+      if(id==='data') renderHealth();
+    }catch(viewError){
+      console.error('View render error:',id,viewError);
+    }
+  },30);
 
   if(opts.scroll!==false){
     requestAnimationFrame(()=>{
@@ -64,11 +70,11 @@ function setupNav(){
     `<button data-section="${id}" class="${i?'':'active'}">${l}</button>`
   ).join('');
 
-  $('[data-section]').forEach(b=>b.addEventListener('click',()=>{
+  $$('[data-section]').forEach(b=>b.addEventListener('click',()=>{
     switchSection(b.dataset.section);
   }));
 
-  $('[data-open-section]').forEach(b=>b.addEventListener('click',()=>{
+  $$('[data-open-section]').forEach(b=>b.addEventListener('click',()=>{
     switchSection(b.dataset.openSection);
   }));
 
