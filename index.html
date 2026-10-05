@@ -116,31 +116,35 @@
         </section>
 
         <section id="overview" class="section active">
+          <div class="overview-city-kpis" id="overviewCityKpis"></div>
+
+          <div class="overview-city-feature">
+            <div class="panel overview-map-card">
+              <div class="panel-head">
+                <div><div class="panel-title">Mapa de inversión por ciudad</div><div class="panel-note">Distribución estimada de inversión según ciudades incluidas en el targeting.</div></div>
+                <button class="mini-link" data-open-section="citiesView">Ver detalle →</button>
+              </div>
+              <div id="overviewCityMap" class="overview-city-map"></div>
+            </div>
+
+            <div class="panel overview-ranking-card">
+              <div class="panel-head">
+                <div><div class="panel-title">Top 5 ciudades por inversión</div><div class="panel-note">Ciudades con mayor participación en la inversión asociada.</div></div>
+                <span class="panel-badge" id="overviewCityCount">0 ciudades</span>
+              </div>
+              <div id="overviewCityRanking" class="overview-city-ranking"></div>
+            </div>
+          </div>
+
           <div class="kpis" id="kpis"></div>
           <div class="insights" id="insights"></div>
 
-          <div class="overview-premium-grid">
-            <div class="panel panel-chart premium-analytics-panel">
-              <div class="panel-head">
-                <div><div class="panel-title">Evolución de inversión, leads y CPL</div><div class="panel-note">Vista ponderada del performance según los filtros activos.</div></div>
-                <select id="trendGranularity" class="compact-select"><option value="month">Mensual</option><option value="day">Diario</option></select>
-              </div>
-              <div class="chartbox"><canvas id="trendChart"></canvas></div>
+          <div class="panel panel-chart premium-analytics-panel overview-trend-panel">
+            <div class="panel-head">
+              <div><div class="panel-title">Evolución de inversión, leads y CPL</div><div class="panel-note">Vista ponderada del performance según los filtros activos.</div></div>
+              <select id="trendGranularity" class="compact-select"><option value="month">Mensual</option><option value="day">Diario</option></select>
             </div>
-
-            <div class="panel city-investment-panel" id="cities">
-              <div class="panel-head">
-                <div><div class="panel-title">Inversión por ciudad (targeting)</div><div class="panel-note">Asignación proporcional entre ciudades configuradas.</div></div>
-              </div>
-              <div id="citySpendList" class="city-spend-list"></div>
-            </div>
-
-            <div class="panel city-map-panel">
-              <div class="panel-head">
-                <div><div class="panel-title">Mapa de inversión por ciudad</div><div class="panel-note">Vista indicativa del peso de inversión.</div></div>
-              </div>
-              <div id="cityMap" class="city-map"></div>
-            </div>
+            <div class="chartbox"><canvas id="trendChart"></canvas></div>
           </div>
 
           <div class="grid-3 premium-lower-grid">
