@@ -6,16 +6,72 @@ function pct(a,b){return b?fmt1.format(a/b*100)+'%':'0%'}
 function short(v,len=38){v=s(v);return v.length>len?v.slice(0,len-1)+'…':v}
 function escapeHtml(v){return s(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
 function escapeAttr(v){return escapeHtml(v)}
-function switchSection(id){$$('.section').forEach(x=>x.classList.toggle('active',x.id===id));$$$('[data-section]').forEach(x=>x.classList.toggle('active',x.dataset.section===id));const titles={overview:'Meta performance command center',audiences:'Audience intelligence',campaigns:'Campaign performance',creatives:'Creative performance gallery',data:'Data health & coverage'};$('#pageTitle').textContent=titles[id]||titles.overview;if(id==='overview')setTimeout(renderOverview,30);if(id==='audiences')setTimeout(renderAudiences,30);if(id==='campaigns')setTimeout(renderCampaigns,30);if(id==='creatives')setTimeout(renderCreatives,30);if(id==='data')setTimeout(renderHealth,30)}
+function switchSection(id,opts={}){
+  $$('.section').forEach(x=>x.classList.toggle('active',x.id===id));
+
+  // Sidebar state
+  $$('[data-section], [data-jump]').forEach(x=>x.classList.remove('active'));
+  const activeSection=document.querySelector(`[data-section="${id}"]`);
+  if(activeSection) activeSection.classList.add('active');
+
+  // Overview has the brand hero/model rail. Analysis pages start directly at filters/results.
+  document.body.classList.toggle('subpage-mode',id!=='overview');
+
+  const titles={
+    overview:'Meta performance command center',
+    audiences:'Audience intelligence',
+    campaigns:'Campaign performance',
+    creatives:'Creative performance gallery',
+    data:'Data health & coverage'
+  };
+  $('#pageTitle').textContent=titles[id]||titles.overview;
+
+  if(id==='overview') setTimeout(renderOverview,30);
+  if(id==='audiences') setTimeout(renderAudiences,30);
+  if(id==='campaigns') setTimeout(renderCampaigns,30);
+  if(id==='creatives') setTimeout(renderCreatives,30);
+  if(id==='data') setTimeout(renderHealth,30);
+
+  if(opts.scroll!==false){
+    requestAnimationFrame(()=>{
+      const target=id==='overview'
+        ? document.querySelector('.hero')
+        : document.querySelector('.filters-shell');
+      if(target) target.scrollIntoView({behavior:'smooth',block:'start'});
+    });
+  }
+}
+
 function setupNav(){
-  const items=[['overview','Overview'],['audiences','Audiencias'],['campaigns','Campañas'],['creatives','Creatividades'],['data','Data Health']];
-  $('#mobileNav').innerHTML=items.map(([id,l],i)=>`<button data-section="${id}" class="${i?'':'active'}">${l}</button>`).join('');
-  $$('[data-section]').forEach(b=>b.addEventListener('click',()=>switchSection(b.dataset.section)));
-  $$('[data-jump]').forEach(b=>b.addEventListener('click',()=>{
-    switchSection('overview');
-    const target=document.getElementById(b.dataset.jump);
-    if(target) target.scrollIntoView({behavior:'smooth',block:'start'});
+  const items=[
+    ['overview','Overview'],
+    ['audiences','Audiencias'],
+    ['campaigns','Campañas'],
+    ['creatives','Creatividades'],
+    ['data','Data Health']
+  ];
+
+  $('#mobileNav').innerHTML=items.map(([id,l],i)=>
+    `<button data-section="${id}" class="${i?'':'active'}">${l}</button>`
+  ).join('');
+
+  $$('[data-section]').forEach(b=>b.addEventListener('click',()=>{
+    switchSection(b.dataset.section);
   }));
+
+  $$('[data-jump]').forEach(b=>b.addEventListener('click',()=>{
+    switchSection('overview',{scroll:false});
+
+    // Give the jump item its own active state so the sidebar reacts immediately.
+    $$('[data-section], [data-jump]').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+
+    requestAnimationFrame(()=>{
+      const target=document.getElementById(b.dataset.jump);
+      if(target) target.scrollIntoView({behavior:'smooth',block:'start'});
+    });
+  }));
+
   $$('.segpill').forEach(b=>b.addEventListener('click',()=>{
     $$('.segpill').forEach(x=>x.classList.remove('active'));
     b.classList.add('active');
@@ -23,9 +79,5 @@ function setupNav(){
     renderAll();
   }));
 }
-try{
-  setupNav();
-}catch(navError){
-  console.error('Navigation setup error:',navError);
-}
+
 bootstrapHonda();
