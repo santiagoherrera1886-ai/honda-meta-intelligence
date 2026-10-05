@@ -808,3 +808,21 @@ body{background:#f6f6f4}
   .pkpi-small-grid{grid-template-columns:repeat(2,1fr)}
   .premium-model{min-width:164px}
 }
+
+
+/* === SIDEBAR NAVIGATION VIEW STATES === */
+body.subpage-mode .hero,
+body.subpage-mode .models-shell{
+  display:none !important;
+}
+body.subpage-mode .content{
+  padding-top:14px;
+}
+body.subpage-mode .filters-shell{
+  margin-top:0;
+}
+.nav button.active[data-jump]{
+  color:#fff;
+  background:linear-gradient(90deg,rgba(228,5,33,.22),rgba(228,5,33,.07));
+  box-shadow:inset 3px 0 0 var(--honda-red);
+}
