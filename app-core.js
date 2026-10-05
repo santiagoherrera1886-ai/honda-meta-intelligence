@@ -335,6 +335,10 @@ async function bootstrapHonda(){
     try{
       renderAll();
       renderModelRail();
+      const requestedView=location.hash.replace('#','');
+      if(requestedView&&document.getElementById(requestedView)&&typeof switchSection==='function'){
+        switchSection(requestedView,{scroll:false,hash:false});
+      }
     }catch(renderError){
       console.error('Error visual no crítico:',renderError);
       if($('#statusText')) $('#statusText').textContent='Snapshot conectado';
