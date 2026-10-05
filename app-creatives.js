@@ -6,18 +6,18 @@ function pct(a,b){return b?fmt1.format(a/b*100)+'%':'0%'}
 function short(v,len=38){v=s(v);return v.length>len?v.slice(0,len-1)+'…':v}
 function escapeHtml(v){return s(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
 function escapeAttr(v){return escapeHtml(v)}
-function switchSection(id){$$('.section').forEach(x=>x.classList.toggle('active',x.id===id));$$('[data-section]').forEach(x=>x.classList.toggle('active',x.dataset.section===id));const titles={overview:'Meta performance command center',audiences:'Audience intelligence',campaigns:'Campaign performance',creatives:'Creative performance gallery',data:'Data health & coverage'};$('#pageTitle').textContent=titles[id]||titles.overview;if(id==='overview')setTimeout(renderOverview,30);if(id==='audiences')setTimeout(renderAudiences,30);if(id==='campaigns')setTimeout(renderCampaigns,30);if(id==='creatives')setTimeout(renderCreatives,30);if(id==='data')setTimeout(renderHealth,30)}
+function switchSection(id){$$('.section').forEach(x=>x.classList.toggle('active',x.id===id));$$$('[data-section]').forEach(x=>x.classList.toggle('active',x.dataset.section===id));const titles={overview:'Meta performance command center',audiences:'Audience intelligence',campaigns:'Campaign performance',creatives:'Creative performance gallery',data:'Data health & coverage'};$('#pageTitle').textContent=titles[id]||titles.overview;if(id==='overview')setTimeout(renderOverview,30);if(id==='audiences')setTimeout(renderAudiences,30);if(id==='campaigns')setTimeout(renderCampaigns,30);if(id==='creatives')setTimeout(renderCreatives,30);if(id==='data')setTimeout(renderHealth,30)}
 function setupNav(){
   const items=[['overview','Overview'],['audiences','Audiencias'],['campaigns','Campañas'],['creatives','Creatividades'],['data','Data Health']];
   $('#mobileNav').innerHTML=items.map(([id,l],i)=>`<button data-section="${id}" class="${i?'':'active'}">${l}</button>`).join('');
-  $('[data-section]').forEach(b=>b.addEventListener('click',()=>switchSection(b.dataset.section)));
-  $('[data-jump]').forEach(b=>b.addEventListener('click',()=>{
+  $$('[data-section]').forEach(b=>b.addEventListener('click',()=>switchSection(b.dataset.section)));
+  $$('[data-jump]').forEach(b=>b.addEventListener('click',()=>{
     switchSection('overview');
     const target=document.getElementById(b.dataset.jump);
     if(target) target.scrollIntoView({behavior:'smooth',block:'start'});
   }));
-  $('.segpill').forEach(b=>b.addEventListener('click',()=>{
-    $('.segpill').forEach(x=>x.classList.remove('active'));
+  $$('.segpill').forEach(b=>b.addEventListener('click',()=>{
+    $$('.segpill').forEach(x=>x.classList.remove('active'));
     b.classList.add('active');
     state.segment=b.dataset.segment;
     renderAll();
