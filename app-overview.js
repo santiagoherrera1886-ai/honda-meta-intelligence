@@ -264,3 +264,144 @@ function renderDeliveryChart(){
     plugins:{legend:{position:'bottom',labels:{boxWidth:8,usePointStyle:true,font:{size:9}}}}
   });
 }
+
+
+/* === MODELOS PAGE === */
+function renderModelsPage(){
+  const rows=state.current||[];
+  const grouped=groupBy(rows,r=>r.__model)
+    .filter(x=>x.key&&x.key!=='OTRO / SIN CLASIFICAR')
+    .sort((a,b)=>b.spend-a.spend);
+
+  if($('#modelPageTable')){
+    $('#modelPageTable').innerHTML=grouped.map(x=>`
+      <tr>
+        <td><b>${escapeHtml(modelAsset(x.key).label||x.key)}</b></td>
+        <td class="metric">${fmtMoney.format(x.spend)}</td>
+        <td class="metric">${fmtNum.format(x.leads)}</td>
+        <td class="metric">${x.leads?fmtMoney.format(x.cpl):'—'}</td>
+        <td class="metric">${fmtNum.format(x.impressions)}</td>
+        <td class="metric">${fmt2.format(x.ctr)}%</td>
+      </tr>`).join('')||'<tr><td colspan="6" class="empty">No hay datos para los filtros actuales.</td></tr>';
+  }
+
+  const leads=grouped.slice(0,12).reverse();
+  makeChart('modelPageLeadsChart','bar',{
+    labels:leads.map(x=>modelAsset(x.key).label||x.key),
+    datasets:[{label:'Leads',data:leads.map(x=>x.leads),backgroundColor:'#e40521',borderRadius:6}]
+  },{
+    indexAxis:'y',
+    plugins:{legend:{display:false}}
+  });
+
+  const cpl=grouped.filter(x=>x.leads>0).sort((a,b)=>a.cpl-b.cpl).slice(0,12).reverse();
+  makeChart('modelPageCplChart','bar',{
+    labels:cpl.map(x=>modelAsset(x.key).label||x.key),
+    datasets:[{label:'CPL',data:cpl.map(x=>Math.round(x.cpl)),backgroundColor:'#111111',borderRadius:6}]
+  },{
+    indexAxis:'y',
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{grid:{color:'#efefec'},ticks:{callback:v=>'$'+Intl.NumberFormat('es-CO',{notation:'compact'}).format(v),font:{size:9}}},
+      y:{grid:{display:false},ticks:{font:{size:9}}}
+    }
+  });
+}
+
+/* === CIUDADES PAGE === */
+const CITY_MAP_POS={
+  bogota:[52,55],
+  medellin:[38,42],
+  cali:[35,61],
+  barranquilla:[53,14],
+  cartagena:[45,19],
+  bucaramanga:[61,38],
+  cucuta:[70,31],
+  ibague:[48,58],
+  pereira:[40,52],
+  manizales:[42,48],
+  armenia:[41,56],
+  villavicencio:[61,61],
+  'santa marta':[60,14],
+  monteria:[40,30],
+  neiva:[50,68],
+  pasto:[31,78]
+};
+
+function cityKpiCard(icon,label,value,sub){
+  return `<article class="city-kpi-card">
+    <div class="city-kpi-icon">${icon}</div>
+    <div><span>${label}</span><strong>${value}</strong><small>${sub}</small></div>
+  </article>`;
+}
+
+function renderCitiesPage(){
+  const cities=cityAllocations(state.current);
+  const total=cities.reduce((a,x)=>a+x.spend,0);
+  const top=cities[0]||{key:'—',spend:0};
+  const active=cities.filter(x=>x.spend>0);
+  const topShare=total?top.spend/total*100:0;
+
+  if($('#cityPageKpis')){
+    $('#cityPageKpis').innerHTML=[
+      cityKpiCard('⌖','Top ciudad',escapeHtml(top.key),`${fmt2.format(topShare)}% de la inversión asociada`),
+      cityKpiCard('▥','Cobertura ciudades',`${active.length} / ${state.snapshotCities.length||active.length}`,'Ciudades con inversión activa'),
+      cityKpiCard('◉','Inversión total asociada',fmtMoney.format(total),'100% del periodo seleccionado')
+    ].join('');
+  }
+
+  if($('#cityCountBadge')) $('#cityCountBadge').textContent=`${active.length} ciudades`;
+
+  const max=top.spend||1;
+  if($('#cityRanking')){
+    $('#cityRanking').innerHTML=cities.slice(0,10).map((x,i)=>{
+      const share=total?x.spend/total*100:0;
+      return `<div class="city-ranking-row">
+        <span class="city-rank">${i+1}</span>
+        <div class="city-ranking-name"><b>${escapeHtml(x.key)}</b><div class="city-ranking-bar"><i style="width:${Math.max(2,x.spend/max*100)}%"></i></div></div>
+        <strong>${fmtMoney.format(x.spend)}</strong>
+        <span class="city-share">${fmt1.format(share)}%</span>
+      </div>`;
+    }).join('')||'<div class="empty">No hay ciudades configuradas para este filtro.</div>';
+  }
+
+  if($('#cityPageMap')){
+    const points=cities.map((x,i)=>{
+      const pos=CITY_MAP_POS[normalizeCityName(x.key)];
+      if(!pos)return '';
+      const share=x.spend/max;
+      const size=14+Math.round(Math.sqrt(share)*34);
+      const labelClass=i<5?'show-label':'';
+      return `<div class="city-map-pin ${labelClass}" style="left:${pos[0]}%;top:${pos[1]}%;--pin:${size}px">
+        <i></i>
+        <div class="city-map-label">
+          <b>${escapeHtml(x.key)}</b>
+          <span>${fmtMoney.format(x.spend)}</span>
+        </div>
+      </div>`;
+    }).join('');
+
+    $('#cityPageMap').innerHTML=`
+      <div class="city-map-canvas">
+        <img class="colombia-departments-map"
+          src="https://upload.wikimedia.org/wikipedia/commons/6/67/Departments_of_colombia.svg"
+          alt="Mapa de departamentos de Colombia"
+          loading="lazy">
+        <div class="city-map-overlay">${points}</div>
+        <div class="city-map-scale">
+          <span>Menor inversión</span>
+          <b class="s1"></b><b class="s2"></b><b class="s3"></b><b class="s4"></b>
+          <span>Mayor inversión</span>
+        </div>
+      </div>`;
+  }
+
+  if($('#cityBottomKpis')){
+    const avg=active.length?total/active.length:0;
+    $('#cityBottomKpis').innerHTML=`
+      <div><span>Ciudades activas</span><b>${fmtNum.format(active.length)}</b></div>
+      <div><span>Inversión promedio por ciudad</span><b>${fmtMoney.format(avg)}</b></div>
+      <div><span>Share top ciudad</span><b>${fmt1.format(topShare)}%</b></div>
+      <div><span>Top 5 share</span><b>${fmt1.format(total?cities.slice(0,5).reduce((a,x)=>a+x.spend,0)/total*100:0)}%</b></div>`;
+  }
+}
