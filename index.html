@@ -34,11 +34,11 @@
 
     <div class="nav" id="nav">
       <button class="active" data-section="overview"><span class="nav-icon">◫</span>Overview</button>
-      <button data-jump="models"><span class="nav-icon">◈</span>Modelos</button>
+      <button data-section="modelsView"><span class="nav-icon">◈</span>Modelos</button>
       <button data-section="audiences"><span class="nav-icon">◎</span>Audiencias</button>
       <button data-section="campaigns"><span class="nav-icon">➤</span>Campañas</button>
       <button data-section="creatives"><span class="nav-icon">▣</span>Creatividades</button>
-      <button data-jump="cities"><span class="nav-icon">⌖</span>Ciudades</button>
+      <button data-section="citiesView"><span class="nav-icon">⌖</span>Ciudades</button>
       <button data-section="data"><span class="nav-icon">▱</span>Data Health</button>
     </div>
 
@@ -155,6 +155,34 @@
           </div>
         </section>
 
+        <section id="modelsView" class="section">
+          <div class="subpage-hero">
+            <div>
+              <div class="eyebrow">PORTAFOLIO HONDA</div>
+              <h2>Performance por modelo</h2>
+              <p>Compara inversión, leads, CPL y respuesta de cada modelo sin salir del dashboard.</p>
+            </div>
+            <button class="subpage-reset" id="resetModelPage">Ver todos los modelos</button>
+          </div>
+
+          <div class="model-page-rail" id="modelRailPage"></div>
+
+          <div class="grid-2 model-analysis-grid">
+            <div class="panel">
+              <div class="panel-head"><div><div class="panel-title">Leads por modelo</div><div class="panel-note">Volumen generado dentro del periodo filtrado.</div></div></div>
+              <div class="chartbox"><canvas id="modelPageLeadsChart"></canvas></div>
+            </div>
+            <div class="panel">
+              <div class="panel-head"><div><div class="panel-title">CPL por modelo</div><div class="panel-note">Solo modelos con leads registrados.</div></div></div>
+              <div class="chartbox"><canvas id="modelPageCplChart"></canvas></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div><div class="panel-title">Resumen del portafolio</div><div class="panel-note">Ordenado por inversión según los filtros activos.</div></div></div>
+            <div class="table-wrap"><table class="table"><thead><tr><th>Modelo</th><th class="metric">Inversión</th><th class="metric">Leads</th><th class="metric">CPL</th><th class="metric">Impresiones</th><th class="metric">CTR</th></tr></thead><tbody id="modelPageTable"></tbody></table></div>
+          </div>
+        </section>
+
         <section id="audiences" class="section">
           <div class="kpis" id="audienceKpis"></div>
           <div class="grid-2">
@@ -186,6 +214,38 @@
           </div>
           <div class="creative-grid" id="creativeGrid"></div>
           <div class="empty hidden" id="creativeEmpty"><b>No encontré creatividades para estos filtros.</b>Ajusta modelo, campaña o audiencia.</div>
+        </section>
+
+        <section id="citiesView" class="section">
+          <div class="city-page-head">
+            <div>
+              <div class="eyebrow">HONDA MOTOS COLOMBIA · META ADS</div>
+              <h2>Mapa de inversión por ciudad</h2>
+              <p>Distribución estimada de la inversión asociada al targeting geográfico configurado en los Ad Sets.</p>
+            </div>
+          </div>
+
+          <div class="city-page-kpis" id="cityPageKpis"></div>
+
+          <div class="city-page-grid">
+            <div class="panel city-page-map-panel">
+              <div class="panel-head">
+                <div><div class="panel-title">Mapa de inversión por ciudad</div><div class="panel-note">Las burbujas representan el peso relativo de inversión.</div></div>
+              </div>
+              <div id="cityPageMap" class="city-page-map"></div>
+            </div>
+
+            <div class="panel city-ranking-panel">
+              <div class="panel-head">
+                <div><div class="panel-title">Top ciudades por inversión</div><div class="panel-note">Ranking proporcional del targeting configurado.</div></div>
+                <span class="panel-badge" id="cityCountBadge">0 ciudades</span>
+              </div>
+              <div class="city-ranking-head"><span>#</span><span>Ciudad</span><span>Inversión</span><span>% total</span></div>
+              <div id="cityRanking" class="city-ranking"></div>
+            </div>
+          </div>
+
+          <div class="city-bottom-kpis" id="cityBottomKpis"></div>
         </section>
 
         <section id="data" class="section">
