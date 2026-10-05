@@ -193,7 +193,11 @@ const MODEL_ASSETS={
     label:'CB 100'
   },
   'CB125F':{
-    img:'https://motos.honda.com.co/_next/image?q=100&url=https%3A%2F%2Fd3lewjhzzgclom.cloudfront.net%2Fsites%2Fdefault%2Ffiles%2Fcsv_import%2Fimages%2Fhonda-cb125f-20-std-rojo1_3.png&w=3840',
+    img:'https://d3lewjhzzgclom.cloudfront.net/sites/default/files/csv_import/images/honda-cb125f-20-std-rojo1_3.png',
+    fallbacks:[
+      'https://motocicletas.honda.com.co/images/cms/cb125f-rojo.png',
+      'https://motocicletas.honda.com.co/images/cms/cb125f.png'
+    ],
     label:'CB 125F'
   },
   'PCX160':{
@@ -205,7 +209,11 @@ const MODEL_ASSETS={
     label:'CB 300F'
   },
   'XR150L':{
-    img:'https://motos.honda.com.co/_next/image?q=100&url=https%3A%2F%2Fd3lewjhzzgclom.cloudfront.net%2Fsites%2Fdefault%2Ffiles%2Fcsv_import%2Fimages%2FXR150L-20-blanco-version_3.png&w=3840',
+    img:'https://d3lewjhzzgclom.cloudfront.net/sites/default/files/csv_import/images/XR150L-20-blanco-version_3.png',
+    fallbacks:[
+      'https://motocicletas.honda.com.co/images/cms/xr150l-blanca.png',
+      'https://motocicletas.honda.com.co/images/cms/xr150l.png'
+    ],
     label:'XR 150L'
   },
   'XR190L':{
@@ -213,7 +221,11 @@ const MODEL_ASSETS={
     label:'XR 190L'
   },
   'WAVE':{
-    img:'https://motos.honda.com.co/_next/image?q=100&url=https%3A%2F%2Fd3lewjhzzgclom.cloudfront.net%2Fsites%2Fdefault%2Ffiles%2Fcsv_import%2Fimages%2Fnueva-honda-wave-110-negra3_3.png&w=3840',
+    img:'https://d3lewjhzzgclom.cloudfront.net/sites/default/files/csv_import/images/nueva-honda-wave-110-negra3_3.png',
+    fallbacks:[
+      'https://motocicletas.honda.com.co/images/cms/nueva-honda-wave-110-negra3.png',
+      'https://motocicletas.honda.com.co/images/cms/wave-110s-negra.png'
+    ],
     label:'WAVE 110S'
   },
   'DIO DLX':{
@@ -229,13 +241,39 @@ const MODEL_ASSETS={
 function modelAsset(name){
   return MODEL_ASSETS[name]||MODEL_ASSETS['CB300F'];
 }
+function hondaBikeFallback(img){
+  const name=img.dataset.model||'';
+  const asset=modelAsset(name);
+  const fallbacks=asset.fallbacks||[];
+  const index=Number(img.dataset.fallbackIndex||0);
+
+  if(index<fallbacks.length){
+    img.dataset.fallbackIndex=String(index+1);
+    img.src=fallbacks[index];
+    return;
+  }
+
+  img.style.display='none';
+  const fallback=img.parentElement?.querySelector('.bike-fallback');
+  if(fallback) fallback.classList.add('show');
+}
+
 function bikeMedia(name,hero=false){
   const asset=modelAsset(name);
   return `<div class="real-bike ${hero?'real-bike-hero':''}">
     <div class="bike-orbit"></div>
     <div class="bike-stage"></div>
-    <img src="${escapeAttr(asset.img)}" alt="Honda ${escapeAttr(asset.label)}" loading="${hero?'eager':'lazy'}"
-      onerror="this.classList.add('bike-image-error')">
+    <img src="${escapeAttr(asset.img)}"
+      data-model="${escapeAttr(name)}"
+      data-fallback-index="0"
+      alt="Honda ${escapeAttr(asset.label)}"
+      loading="${hero?'eager':'lazy'}"
+      onerror="hondaBikeFallback(this)">
+    <div class="bike-fallback">
+      <span>HONDA</span>
+      <strong>${escapeHtml(asset.label||name)}</strong>
+      <small>Imagen oficial no disponible</small>
+    </div>
     <div class="bike-specular"></div>
   </div>`;
 }
@@ -278,12 +316,19 @@ async function bootstrapHonda(){
     hydrateSnapshot(data);
     prepareData();
     initFilters();
-    renderAll();
-    renderModelRail();
-    if($('#statusText'))$('#statusText').textContent='Snapshot conectado';
+
+    if($('#statusText')) $('#statusText').textContent='Snapshot conectado';
+
+    try{
+      renderAll();
+      renderModelRail();
+    }catch(renderError){
+      console.error('Error visual no crítico:',renderError);
+      if($('#statusText')) $('#statusText').textContent='Snapshot conectado';
+    }
   }catch(err){
     console.error(err);
-    if($('#statusText'))$('#statusText').textContent='Error de snapshot';
+    if($('#statusText')) $('#statusText').textContent='Error de snapshot';
     alert('No pude cargar el snapshot integrado. Revisa el deployment.');
   }finally{
     showLoading(false);
