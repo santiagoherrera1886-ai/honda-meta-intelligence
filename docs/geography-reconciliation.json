@@ -1,0 +1,203 @@
+{
+  "source": "HOnda segementaciones  (1).xlsx",
+  "sha256": "d124e9031ffd30655c211e702e62d27fae110c9821ca03466bf72b2047d87357",
+  "dailyRows": 31045,
+  "matchingDailyRows": 31045,
+  "period": [
+    "2025-10-01",
+    "2026-09-30"
+  ],
+  "totalSpend": 961236261.0,
+  "totalLeads": 150030.0,
+  "performanceAdsets": 246,
+  "matchedAdsets": 244,
+  "missingAdsets": [
+    "120236900638300508",
+    "120237183442030508"
+  ],
+  "cityKeys": 303,
+  "geocodedCities": 259,
+  "categories": {
+    "city": {
+      "adsets": 45,
+      "spend": 106726824.0
+    },
+    "region": {
+      "adsets": 31,
+      "spend": 61978339.0
+    },
+    "country": {
+      "adsets": 126,
+      "spend": 573487383.0
+    },
+    "mixed": {
+      "adsets": 42,
+      "spend": 219043650.0
+    },
+    "missing": {
+      "adsets": 2,
+      "spend": 65.0
+    }
+  },
+  "narino": [
+    {
+      "adsetId": "120252457899750508",
+      "adset": "ALCANCE_CIUDADES_CB100",
+      "location": "Nariño · Antioquia",
+      "locationKey": "cities:474864",
+      "spend": 6972489.0,
+      "oldAllocated": 6972489.0,
+      "counts": {
+        "cities": 1,
+        "regions": 7,
+        "subcities": 1
+      }
+    },
+    {
+      "adsetId": "120243544578900508",
+      "adset": "CB125F_DLX_FANALCA",
+      "location": "Nariño · Nariño",
+      "locationKey": "cities:474867",
+      "spend": 2799994.0,
+      "oldAllocated": 2799994.0,
+      "counts": {
+        "cities": 1,
+        "regions": 21
+      }
+    },
+    {
+      "adsetId": "120242618035710508",
+      "adset": "PEF_INTERESES_CIUDADES_CB100",
+      "location": "Nariño · Nariño",
+      "locationKey": "cities:474867",
+      "spend": 4882392.0,
+      "oldAllocated": 542488.0,
+      "counts": {
+        "cities": 9,
+        "regions": 1
+      }
+    },
+    {
+      "adsetId": "120242563690500508",
+      "adset": "PEF_INTERESES_CIUDADES_XR150L-20",
+      "location": "Nariño · Nariño",
+      "locationKey": "cities:474867",
+      "spend": 1508049.0,
+      "oldAllocated": 754024.5,
+      "counts": {
+        "cities": 2,
+        "regions": 8
+      }
+    },
+    {
+      "adsetId": "120242247754720508",
+      "adset": "CB190_PROGRESER_2",
+      "location": "Nariño · Cundinamarca",
+      "locationKey": "cities:474871",
+      "spend": 3499907.0,
+      "oldAllocated": 29660.228813559323,
+      "counts": {
+        "cities": 121,
+        "subcities": 13,
+        "neighborhoods": 2
+      }
+    },
+    {
+      "adsetId": "120226699901840508",
+      "adset": "PEF_INTERESES_NAVI_JUNIO",
+      "location": "Nariño · Cundinamarca",
+      "locationKey": "cities:474871",
+      "spend": 9861382.0,
+      "oldAllocated": 57002.20809248555,
+      "counts": {
+        "cities": 174,
+        "regions": 4,
+        "subcities": 16,
+        "medium_geo_areas": 1
+      }
+    },
+    {
+      "adsetId": "120221228135180508",
+      "adset": "CB125F_FANALCA",
+      "location": "Nariño · Nariño",
+      "locationKey": "cities:474867",
+      "spend": 3370578.0,
+      "oldAllocated": 3370578.0,
+      "counts": {
+        "cities": 1,
+        "regions": 21
+      }
+    },
+    {
+      "adsetId": "120215930009820508",
+      "adset": "PEF_INTERESES_CB100",
+      "location": "Nariño · Cundinamarca",
+      "locationKey": "cities:474871",
+      "spend": 25151011.0,
+      "oldAllocated": 145381.56647398844,
+      "counts": {
+        "cities": 174,
+        "regions": 4,
+        "subcities": 16,
+        "medium_geo_areas": 1
+      }
+    },
+    {
+      "adsetId": "120215929786210508",
+      "adset": "PEF_INTERESES_XBLADE",
+      "location": "Nariño · Cundinamarca",
+      "locationKey": "cities:474871",
+      "spend": 7909585.0,
+      "oldAllocated": 45985.95930232558,
+      "counts": {
+        "cities": 173,
+        "regions": 4,
+        "subcities": 13,
+        "medium_geo_areas": 1
+      }
+    },
+    {
+      "adsetId": "120215928904320508",
+      "adset": "PEF_INTERESES_WAVE",
+      "location": "Nariño · Cundinamarca",
+      "locationKey": "cities:474871",
+      "spend": 8488727.0,
+      "oldAllocated": 49067.78612716763,
+      "counts": {
+        "cities": 174,
+        "regions": 4,
+        "subcities": 16,
+        "medium_geo_areas": 1
+      }
+    },
+    {
+      "adsetId": "120215928324710508",
+      "adset": "PEF_INTERESES_DIO-STD",
+      "location": "Nariño · Cundinamarca",
+      "locationKey": "cities:474871",
+      "spend": 4905514.0,
+      "oldAllocated": 28355.57225433526,
+      "counts": {
+        "cities": 174,
+        "regions": 4,
+        "subcities": 16,
+        "medium_geo_areas": 1
+      }
+    },
+    {
+      "adsetId": "120215928054970508",
+      "adset": "PEF_INTERESES_DIO-DLX",
+      "location": "Nariño · Cundinamarca",
+      "locationKey": "cities:474871",
+      "spend": 4361243.0,
+      "oldAllocated": 25209.49710982659,
+      "counts": {
+        "cities": 174,
+        "regions": 4,
+        "subcities": 16,
+        "medium_geo_areas": 1
+      }
+    }
+  ],
+  "previousNarinoAllocation": 14820236.318173688
+}

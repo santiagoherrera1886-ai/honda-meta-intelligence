@@ -5,7 +5,7 @@ const HONDA_VIEWS={
   audiences:['Audiencias','Audiencias y segmentación'],
   campaigns:['Campañas','Performance de campañas'],
   creatives:['Creatividades','Creatividades de Meta Ads'],
-  citiesView:['Ciudades','Inversión por ubicación'],
+  citiesView:['Ciudades','Geografía de los conjuntos'],
   data:['Data Health','Calidad y cobertura de datos']
 };
 function renderActiveSection(){

@@ -37,7 +37,9 @@ function hydrateSnapshot(data){
   const audience=i=>D.audience?.[i]||'';
   const goal=i=>D.goal?.[i]||'';
 
-  state.snapshotCities=data.cities||[];
+  state.locationCatalog=new Map(Object.entries(GEO_TARGETING.locations));
+  const included=new Set(Object.values(GEO_TARGETING.adsets).flatMap(geo=>geo.locations));
+  state.snapshotCities=[...included].filter(id=>state.locationCatalog.get(id)?.kind==='cities');
 
   state.seg=Object.entries(data.seg||{}).map(([id,x])=>({
     'Ad Set ID':id,
@@ -49,10 +51,11 @@ function hydrateSnapshot(data){
     'Edad mínima':x.mn||'',
     'Edad máxima':x.mx||'',
     'Género':x.sx||'',
-    'Ciudades':(x.ci||[]).join(', '),
-    'Ciudades + radio':(x.ci||[]).join(', '),
-    '__cities':x.ci||[],
-    'Regiones':x.rg||'',
+    'Ciudades':adsetCityIds(id).map(locationLabel).join('; '),
+    'Ciudades + radio':adsetCityIds(id).map(ref=>locationWithRadius(ref,GEO_TARGETING.adsets[id])).join('; '),
+    '__cities':adsetCityIds(id),
+    '__geo':GEO_TARGETING.adsets[id],
+    'Regiones':(GEO_TARGETING.adsets[id]?.locations||[]).filter(ref=>state.locationCatalog.get(ref)?.kind==='regions').map(locationLabel).join('; '),
     'Intereses':x.it||'',
     'Behaviors':x.bh||'',
     'Cargos laborales':x.wp||'',
@@ -144,10 +147,16 @@ function prepareData(){
   if($('#heroAds')) $('#heroAds').textContent=fmtNum.format(state.ads.length);
 }
 function uniq(arr){return [...new Set(arr.filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b),'es'))}
+function locationLabel(id){return state.locationCatalog?.get(id)?.label||id||'';}
+function adsetCityIds(id){return (GEO_TARGETING.adsets[id]?.locations||[]).filter(ref=>GEO_TARGETING.locations[ref]?.kind==='cities');}
+function locationWithRadius(id,geo){
+  const radius=geo?.radii?.[id];
+  return locationLabel(id)+(radius?` (${radius.radius} ${radius.unit==='kilometer'?'km':radius.unit==='mile'?'mi':radius.unit})`:'');
+}
 function setOptions(el,arr,all='Todos'){el.innerHTML=`<option value="">${all}</option>`+arr.map(v=>`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('')}
 function initFilters(){
   setOptions($('#fModel'),state.modelStats.map(x=>x.key));
-  setOptions($('#fCity'),state.snapshotCities||[],'Todas las ciudades');
+  $('#fCity').innerHTML='<option value="">Todas las ciudades</option>'+state.snapshotCities.slice().sort((a,b)=>locationLabel(a).localeCompare(locationLabel(b),'es')).map(id=>`<option value="${escapeAttr(id)}">${escapeHtml(locationLabel(id))}</option>`).join('');
   setOptions($('#fCampaign'),uniq(state.perfEnriched.map(r=>s(get(r,'Campaña')))),'Todas');
   setOptions($('#fAudience'),uniq(state.perfEnriched.map(r=>r.__audience)));
   setOptions($('#fDelivery'),uniq(state.perfEnriched.map(r=>r.__delivery)));
@@ -200,7 +209,7 @@ function renderAll(){
     b.classList.toggle('active',active);
     b.setAttribute('aria-pressed',String(active));
   });
-  $('#filterSummary').textContent=`${fmtNum.format(state.current.length)} registros · ${$('#fModel').value||'Todos los modelos'} · ${$('#fCity').value||'Todas las ubicaciones'}`;
+  $('#filterSummary').textContent=`${fmtNum.format(state.current.length)} registros · ${$('#fModel').value||'Todos los modelos'} · ${locationLabel($('#fCity').value)||'Todas las ciudades'}`;
   const invalidDates=$('#fFrom').value && $('#fTo').value && $('#fFrom').value>$('#fTo').value;
   $('#filterValidation').textContent=invalidDates?'La fecha «Desde» debe ser anterior o igual a «Hasta».':'';
   $('#filterValidation').hidden=!invalidDates;

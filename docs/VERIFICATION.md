@@ -1,5 +1,7 @@
 # Honda workspace verification · 2026-10-06
 
+Historical UI checks before the Excel reconciliation. Geographic allocation rules and counts below have been superseded by `GEO_RECONCILIATION.md`.
+
 ## Interaction checks
 
 A jsdom harness loaded the real 31,045-row snapshot and all application scripts. Chart.js was stubbed for DOM interaction checks; real charts were then checked in the deployed browser.

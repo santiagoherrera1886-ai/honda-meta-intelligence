@@ -35,9 +35,9 @@ El filtro de ciudad representa la **ciudad configurada en el targeting del Ad Se
 
 El mapa interactivo utiliza un único sistema de coordenadas para el contorno y los puntos. Permite acercar, alejar, arrastrar, restablecer y seleccionar una ubicación desde el mapa o el ranking. Los grupos de puntos se abren con clic. Las ubicaciones se pueden buscar por nombre y los filtros se pueden limpiar.
 
-Se identificaron coordenadas inequívocas para 223 de los 287 nombres configurados. Los 64 restantes permanecen disponibles en filtros y ranking, sin inventar una posición. Procedencia y reglas: [assets/SOURCES.md](assets/SOURCES.md).
+El cruce con el Excel conserva 303 ciudades por identificador de Meta y departamento. Se identificaron coordenadas para 259; las demás permanecen en filtros y ranking sin inventar una posición. Nariño, Antioquia; Nariño, Nariño; y Nariño, Cundinamarca son tres ciudades distintas. Procedencia y reglas: [assets/SOURCES.md](assets/SOURCES.md).
 
-La inversión geográfica es un reparto uniforme del gasto entre ubicaciones del Ad Set, no inversión entregada y medida por ciudad. Las métricas de los anuncios son agregadas del snapshot completo: no hay desglose diario por anuncio.
+El mapa se ordena por número de conjuntos asociados. El importe es el gasto completo de esos conjuntos, compartido entre sus ubicaciones y no aditivo entre ciudades. No se distribuye artificialmente la inversión: el Excel no incluye entrega por ciudad. Las métricas de los anuncios son agregadas del snapshot completo: no hay desglose diario por anuncio.
 
 ## Desarrollo y publicación
 
@@ -48,3 +48,9 @@ Aplicación estática sin compilación. Para servirla localmente: `python -m htt
 ## Nota sobre alcance
 
 El alcance diario no es aditivo entre fechas. Una misma persona puede aparecer en más de un día, por lo que el acumulado se presenta como **Alcance diario*** y la frecuencia agregada como proxy.
+
+## Reconciliación geográfica
+
+`geo-targeting.js` conserva identificadores, departamentos, tipos de ubicación, exclusiones y radios del JSON original de Meta para los 244 conjuntos con segmentación. No modifica el snapshot financiero. El cruce de las 31.045 filas se reproduce con `python scripts/reconcile_geography.py archivo.xlsx CO.zip` (requiere openpyxl y el catálogo GeoNames de Colombia).
+
+Detalle: [docs/GEO_RECONCILIATION.md](docs/GEO_RECONCILIATION.md). Pruebas sin dependencias: `node --test tests/geography.test.cjs`.

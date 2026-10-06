@@ -96,7 +96,7 @@
           <div class="filter-heading"><span class="filter-summary" id="filterSummary" role="status" aria-live="polite">Preparando filtros…</span><button type="button" id="resetFilters" class="text-btn">Limpiar filtros ↺</button></div>
           <div class="filters">
             <div class="field"><label for="fModel">Modelo</label><select id="fModel"></select></div>
-            <div class="field"><label for="fCity">Ciudad configurada</label><select id="fCity"></select></div>
+            <div class="field"><label for="fCity">Ciudad + departamento</label><select id="fCity"></select></div>
             <div class="field"><label for="fCampaign">Campaña</label><select id="fCampaign"></select></div>
             <div class="field"><label for="fAudience">Tipo audiencia</label><select id="fAudience"></select></div>
             <div class="field"><label for="fDelivery">Tipo de entrega</label><select id="fDelivery"></select></div>
@@ -113,19 +113,20 @@
               <button class="segpill" data-segment="Intereses">Intereses</button>
               <button class="segpill" data-segment="Broad">Broad</button>
             </div>
-            <div class="filter-note">Ciudad selecciona Ad Sets que incluyen esa ubicación. El mapa estima un reparto uniforme; no mide entrega real por ciudad.</div>
+            <div class="filter-note">Ciudad selecciona conjuntos que la incluyen. Su gasto es compartido con las otras ubicaciones: el Excel no trae inversión entregada por ciudad.</div>
           </div>
           <p id="filterValidation" class="filter-validation" role="alert" hidden></p>
         </section>
         <div id="viewError" class="view-error" role="alert" hidden><span id="viewErrorText"></span><button type="button" id="retryView">Reintentar</button></div>
 
         <section id="overview" class="section active">
+          <div class="geo-data-note"><b>Geografía cruzada con el Excel</b><span>El mapa muestra ciudades configuradas. Los importes corresponden al gasto completo de los conjuntos asociados; no se reparten ni se suman entre ciudades.</span></div>
           <div class="overview-city-kpis" id="overviewCityKpis"></div>
 
           <div class="overview-city-feature">
             <div class="panel overview-map-card">
               <div class="panel-head">
-                <div><div class="panel-title">La inversión en el territorio</div><div class="panel-note">Selecciona una ubicación para filtrar el dashboard.</div></div>
+                <div><div class="panel-title">Ciudades en la segmentación</div><div class="panel-note">El tamaño indica cuántos conjuntos incluyen la ciudad.</div></div>
                 <button class="mini-link" data-open-section="citiesView">Ver detalle →</button>
               </div>
               <div id="overviewCityMap" class="overview-city-map"></div>
@@ -133,13 +134,16 @@
 
             <div class="panel overview-ranking-card">
               <div class="panel-head">
-                <div><div class="panel-title">Top 5 ubicaciones</div><div class="panel-note">Participación estimada de la inversión con ubicación configurada.</div></div>
+                <div><div class="panel-title">Top 5 por conjuntos asociados</div><div class="panel-note">El gasto es del conjunto completo, compartido entre sus ubicaciones.</div></div>
                 <span class="panel-badge" id="overviewCityCount">0 ciudades</span>
               </div>
+              <div class="city-ranking-head"><span>#</span><span>Ciudad / Depto.</span><span>Gasto conjuntos*</span><span>Sets</span></div>
               <div id="overviewCityRanking" class="overview-city-ranking"></div>
               <div class="geo-ranking-footer"><p>Elige una fila para aplicar el filtro de ciudad.</p><button type="button" class="mini-link" data-open-section="citiesView">Explorar todas las ubicaciones →</button></div>
             </div>
           </div>
+
+          <div class="panel geo-trace" id="overviewGeoTrace"></div>
 
           <div class="kpis" id="kpis"></div>
           <div class="insights" id="insights"></div>
@@ -230,11 +234,12 @@
           <div class="city-page-head">
             <div>
               <div class="eyebrow">HONDA MOTOS COLOMBIA · META ADS</div>
-              <h2>Mapa de inversión por ciudad</h2>
-              <p>Explora el territorio, acerca el mapa y selecciona una ubicación para conectar geografía y performance.</p>
+              <h2>Geografía de los conjuntos</h2>
+              <p>Ciudades identificadas por su código de Meta y departamento. Selecciona una para revisar los conjuntos que la incluyen.</p>
             </div>
           </div>
 
+          <div class="geo-data-note"><b>La inversión real por ciudad no está en este archivo</b><span>Se conserva el gasto exacto por conjunto. Un mismo conjunto puede incluir ciudades, departamentos y otras zonas; su presupuesto no se atribuye a una sola ubicación.</span></div>
           <div class="city-page-kpis" id="cityPageKpis"></div>
 
           <div class="city-page-grid">
@@ -247,18 +252,20 @@
 
             <div class="panel city-ranking-panel">
               <div class="panel-head">
-                <div><div class="panel-title">Inversión por ubicación</div><div class="panel-note">Selecciona una fila para ver sus resultados.</div></div>
+                <div><div class="panel-title">Ciudades y conjuntos asociados</div><div class="panel-note">* Gasto compartido del conjunto, no gasto local. No sumar entre ciudades.</div></div>
                 <span class="panel-badge" id="cityCountBadge">0 ciudades</span>
               </div>
-              <label class="visually-hidden" for="citySearch">Buscar una ubicación en el ranking</label><input type="search" id="citySearch" class="geo-search" placeholder="Buscar ubicación…">
-              <div class="city-ranking-head"><span>#</span><span>Ubicación</span><span>Inversión est.</span><span>%</span></div>
+              <label class="visually-hidden" for="citySearch">Buscar ciudad o departamento en el ranking</label><input type="search" id="citySearch" class="geo-search" placeholder="Ciudad o departamento…">
+              <div class="city-ranking-head"><span>#</span><span>Ciudad / Depto.</span><span>Gasto conjuntos*</span><span>Sets</span></div>
               <div id="cityRanking" class="city-ranking"></div>
               <button type="button" id="showAllCities" class="geo-show-all">Ver todas las ubicaciones</button>
             </div>
           </div>
 
           <div class="city-bottom-kpis" id="cityBottomKpis"></div>
-          <details class="geo-method"><summary>Cómo leer el mapa y la inversión</summary><p>La inversión de cada Ad Set se reparte en partes iguales entre sus ubicaciones configuradas. Es una estimación de targeting, no un reporte de entrega ni de ventas por ciudad. Al seleccionar una ciudad, las otras vistas muestran el performance completo de los Ad Sets que la incluyen.</p><p>Los nombres ambiguos o sin coordenadas identificadas permanecen en el listado. Solo se dibujan coincidencias únicas con cabeceras municipales del catálogo <a href="https://www.geonames.org/" target="_blank" rel="noopener">GeoNames</a> (CC BY 4.0). Contorno continental simplificado; no muestra radios de cobertura.</p></details>
+          <div class="panel geo-coverage-panel" id="geoCoverage"></div>
+          <div class="panel geo-trace" id="cityGeoTrace"></div>
+          <details class="geo-method"><summary>Fuente, cruce y límites del mapa</summary><p>Se cruzó «HOnda segementaciones (1).xlsx» por Ad Set ID. Las 31.045 filas diarias coinciden en inversión y leads con el snapshot: $961.236.261 y 150.030 leads. Hay segmentación para 244 de los 246 conjuntos; los dos restantes suman $65 y se mantienen como «Sin segmentación».</p><p>La geografía proviene de «Targeting completo JSON»: se distinguen ciudades, departamentos, países y otras zonas, conservando identificadores, departamento y radios. Es la configuración del archivo, no un historial diario de cambios de targeting. Seleccionar una ciudad filtra los conjuntos que la mencionan explícitamente; no incorpora conjuntos nacionales o departamentales por suponer que entregaron allí.</p><p>El gasto asociado es el gasto completo de cada conjunto en el periodo filtrado. No se reparte entre sus ubicaciones. Un conjunto puede aparecer en varias ciudades: los importes entre ciudades no son aditivos. Para conocer inversión realmente entregada por geografía se requiere un informe de entrega de Meta con un desglose geográfico disponible.</p><p>Las coordenadas se contrastan por nombre y departamento con <a href="https://www.geonames.org/" target="_blank" rel="noopener">GeoNames</a> (CC BY 4.0). Los puntos representan cabeceras, no los radios de segmentación. Los lugares sin una coincidencia inequívoca permanecen en el listado.</p></details>
         </section>
 
         <section id="data" class="section">
@@ -275,6 +282,7 @@
 
 <script src="./data-packed.js"></script>
 <script src="./snapshot-loader.js"></script>
+<script src="./geo-targeting.js"></script>
 <script src="./app-core.js"></script>
 <script src="./app-overview.js"></script>
 <script src="./app-detail.js"></script>
