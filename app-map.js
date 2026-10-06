@@ -47,7 +47,8 @@ function mapClusters(cities,zoom){
   const groups=[];
   cities.forEach(city=>{
     const point=cityCoordinates(city.key);if(!point)return;
-    const group=groups.find(g=>Math.hypot(g.x-point[0],g.y-point[1])<16/zoom);
+    // At maximum zoom every city is individually reachable, including by keyboard.
+    const group=zoom<8?groups.find(g=>Math.hypot(g.x-point[0],g.y-point[1])<16/zoom):null;
     if(group){group.items.push(city);group.spend+=city.spend;}
     else groups.push({x:point[0],y:point[1],items:[city],spend:city.spend});
   });
