@@ -153,18 +153,29 @@ function initFilters(){
   setOptions($('#fDelivery'),uniq(state.perfEnriched.map(r=>r.__delivery)));
   $('#fFrom').value=state.minDate;
   $('#fTo').value=state.maxDate;
-  ['fModel','fCity','fCampaign','fAudience','fDelivery','fFrom','fTo'].forEach(id=>$('#'+id).addEventListener('change',()=>{renderAll();renderModelRail();}));
+  ['fModel','fCity','fCampaign','fAudience','fDelivery','fFrom','fTo'].forEach(id=>$('#'+id).addEventListener('change',renderAll));
   $('#fInterest').addEventListener('input',debounce(renderAll,220));
   $('#trendGranularity').addEventListener('change',renderOverview);
   $('#creativeSort').addEventListener('change',renderCreatives);
-  if($('#clearModel')) $('#clearModel').addEventListener('click',()=>{$('#fModel').value='';renderAll();renderModelRail();});
-  if($('#resetModelPage')) $('#resetModelPage').addEventListener('click',()=>{$('#fModel').value='';renderAll();renderModelRail();});
+  if($('#clearModel')) $('#clearModel').addEventListener('click',()=>selectHondaModel(''));
+  if($('#resetModelPage')) $('#resetModelPage').addEventListener('click',()=>selectHondaModel(''));
+  $('#resetFilters').addEventListener('click',resetFilters);
+}
+function resetFilters(){
+  ['fModel','fCity','fCampaign','fAudience','fDelivery','fInterest'].forEach(id=>$('#'+id).value='');
+  $('#fFrom').value=state.minDate;
+  $('#fTo').value=state.maxDate;
+  state.segment='Todos';
+  $('#citySearch').value='';
+  state.allCities=false;
+  Object.values(mapViews).forEach(view=>Object.assign(view,MAP_HOME));
+  renderAll();
 }
 function debounce(fn,ms){let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms)}}
-function filterData(){
+function filterData(ignoreModel=false){
   const model=$('#fModel').value,city=$('#fCity').value,camp=$('#fCampaign').value,aud=$('#fAudience').value,del=$('#fDelivery').value,from=$('#fFrom').value,to=$('#fTo').value,interest=$('#fInterest').value.trim().toLowerCase();
-  state.current=state.perfEnriched.filter(r=>{
-    if(model&&r.__model!==model)return false;
+  return state.perfEnriched.filter(r=>{
+    if(!ignoreModel&&model&&r.__model!==model)return false;
     if(city&&!(r.__cities||[]).includes(city))return false;
     if(camp&&s(get(r,'Campaña'))!==camp)return false;
     if(aud&&r.__audience!==aud)return false;
@@ -183,15 +194,17 @@ function filterData(){
 function agg(rows){const o={spend:0,impressions:0,reach:0,clicks:0,linkClicks:0,uniqueClicks:0,outbound:0,lpv:0,leads:0,results:0};rows.forEach(r=>{o.spend+=n(get(r,'Inversión'));o.impressions+=n(get(r,'Impresiones'));o.reach+=n(get(r,'Alcance diario','Alcance'));o.clicks+=n(get(r,'Clicks'));o.linkClicks+=n(get(r,'Link Clicks'));o.uniqueClicks+=n(get(r,'Unique Clicks'));o.outbound+=n(get(r,'Outbound Clicks'));o.lpv+=n(get(r,'Landing Page Views'));o.leads+=n(get(r,'Leads'));o.results+=n(get(r,'Resultados'))});o.cpl=o.leads?o.spend/o.leads:0;o.ctr=o.impressions?o.clicks/o.impressions*100:0;o.cpc=o.clicks?o.spend/o.clicks:0;o.cpm=o.impressions?o.spend/o.impressions*1000:0;o.freq=o.reach?o.impressions/o.reach:0;o.cvr=o.linkClicks?o.leads/o.linkClicks*100:0;o.lpvRate=o.linkClicks?o.lpv/o.linkClicks*100:0;return o}
 function groupBy(rows,keyFn){const m=new Map();rows.forEach(r=>{const k=keyFn(r)||'Sin clasificar';if(!m.has(k))m.set(k,[]);m.get(k).push(r)});return [...m.entries()].map(([key,rs])=>({key,rows:rs,...agg(rs)}))}
 function renderAll(){
-  filterData();
-  renderOverview();
-  if(typeof renderModelsPage==='function') renderModelsPage();
-  renderAudiences();
-  renderCampaigns();
-  renderCreatives();
-  if(typeof renderCitiesPage==='function') renderCitiesPage();
-  renderHealth();
-  updateHero();
+  state.current=filterData();
+  $$('.segpill').forEach(b=>{
+    const active=b.dataset.segment===state.segment;
+    b.classList.toggle('active',active);
+    b.setAttribute('aria-pressed',String(active));
+  });
+  $('#filterSummary').textContent=`${fmtNum.format(state.current.length)} registros · ${$('#fModel').value||'Todos los modelos'} · ${$('#fCity').value||'Todas las ubicaciones'}`;
+  const invalidDates=$('#fFrom').value && $('#fTo').value && $('#fFrom').value>$('#fTo').value;
+  $('#filterValidation').textContent=invalidDates?'La fecha «Desde» debe ser anterior o igual a «Hasta».':'';
+  $('#filterValidation').hidden=!invalidDates;
+  renderActiveSection();
 }
 
 const MODEL_ASSETS={
@@ -246,7 +259,7 @@ const MODEL_ASSETS={
 };
 
 function modelAsset(name){
-  return MODEL_ASSETS[name]||MODEL_ASSETS['CB300F'];
+  return MODEL_ASSETS[name]||{label:name,img:''};
 }
 function hondaBikeFallback(img){
   const name=img.dataset.model||'';
@@ -270,13 +283,13 @@ function bikeMedia(name,hero=false){
   return `<div class="real-bike ${hero?'real-bike-hero':''}">
     <div class="bike-orbit"></div>
     <div class="bike-stage"></div>
-    <img src="${escapeAttr(asset.img)}"
+    ${asset.img?`<img src="${escapeAttr(asset.img)}"
       data-model="${escapeAttr(name)}"
       data-fallback-index="0"
       alt="Honda ${escapeAttr(asset.label)}"
       loading="${hero?'eager':'lazy'}"
-      onerror="hondaBikeFallback(this)">
-    <div class="bike-fallback">
+      onerror="hondaBikeFallback(this)">`:''}
+    <div class="bike-fallback ${asset.img?'':'show'}">
       <span>HONDA</span>
       <strong>${escapeHtml(asset.label||name)}</strong>
       <small>Imagen oficial no disponible</small>
@@ -286,7 +299,7 @@ function bikeMedia(name,hero=false){
 }
 function modelCardMarkup(m,i,current){
   const asset=modelAsset(m.key);
-  return `<button class="model-card premium-model ${current===m.key?'active':''}" data-model="${escapeAttr(m.key)}" style="--delay:${i*20}ms">
+  return `<button type="button" class="model-card premium-model ${current===m.key?'active':''}" data-model="${escapeAttr(m.key)}" aria-pressed="${current===m.key}" aria-label="Filtrar por ${escapeAttr(asset.label||m.key)}" style="--delay:${i*20}ms">
     <div class="model-card-top">
       <span>${escapeHtml(asset.label||m.key)}</span>
       <small>${fmtMoney.format(m.spend)}</small>
@@ -304,23 +317,14 @@ function selectHondaModel(model){
   if(!select)return;
   select.value=model||'';
   renderAll();
-  renderModelRail();
-}
-
-function bindModelCards(){
-  document.querySelectorAll('.model-card').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      selectHondaModel(btn.dataset.model);
-    });
-  });
 }
 function renderModelRail(){
   const current=$('#fModel').value;
-  const models=(state.modelStats||[]).slice(0,12);
+  const filteredStats=new Map(groupBy(filterData(true),r=>r.__model).map(x=>[x.key,x]));
+  const models=(state.modelStats||[]).map(m=>filteredStats.get(m.key)||{key:m.key,...agg([])});
   const markup=models.map((m,i)=>modelCardMarkup(m,i,current)).join('');
-  if($('#modelRail')) $('#modelRail').innerHTML=markup;
-  if($('#modelRailPage')) $('#modelRailPage').innerHTML=markup;
-  bindModelCards();
+  const rail=state.view==='modelsView'?$('#modelRailPage'):$('#modelRail');
+  if(rail){const position=rail.scrollLeft;rail.innerHTML=markup;rail.scrollLeft=position;}
 }
 function updateHero(){
   const selected=$('#fModel').value;
@@ -328,7 +332,10 @@ function updateHero(){
   const display=selected||top?.key||'CB300F';
   const asset=modelAsset(display);
   $('#heroModelName').textContent=selected?(asset.label||display):'PORTAFOLIO HONDA';
-  $('#heroBike').innerHTML=bikeMedia(display,true);
+  if($('#heroBike').dataset.model!==display){
+    $('#heroBike').innerHTML=bikeMedia(display,true);
+    $('#heroBike').dataset.model=display;
+  }
 }
 async function bootstrapHonda(){
   try{
@@ -340,21 +347,14 @@ async function bootstrapHonda(){
 
     if($('#statusText')) $('#statusText').textContent='Snapshot conectado';
 
-    try{
-      renderAll();
-      renderModelRail();
-      const requestedView=location.hash.replace('#','');
-      if(requestedView&&document.getElementById(requestedView)&&typeof switchSection==='function'){
-        switchSection(requestedView,{scroll:false,hash:false});
-      }
-    }catch(renderError){
-      console.error('Error visual no crítico:',renderError);
-      if($('#statusText')) $('#statusText').textContent='Snapshot conectado';
-    }
+    state.ready=true;
+    switchSection(location.hash.slice(1),{scroll:false,hash:false,render:false});
+    renderAll();
   }catch(err){
     console.error(err);
     if($('#statusText')) $('#statusText').textContent='Error de snapshot';
-    alert('No pude cargar el snapshot integrado. Revisa el deployment.');
+    $('#viewError').hidden=false;
+    $('#viewErrorText').textContent='No pudimos cargar el snapshot. Recarga la página para volver a intentar.';
   }finally{
     showLoading(false);
   }

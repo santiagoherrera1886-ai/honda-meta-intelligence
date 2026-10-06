@@ -8,6 +8,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
   <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./workspace.css">
 </head>
 <body>
 <div class="loading show" id="loading">
@@ -18,13 +19,13 @@
   </div>
 </div>
 
-<div class="mobile-nav" id="mobileNav"></div>
+<nav class="mobile-nav" id="mobileNav" aria-label="Navegación principal móvil"></nav>
 
 <div class="app">
   <aside class="sidebar">
     <div class="brand brand-official">
       <div class="brand-logo-wrap">
-        <img class="honda-logo" src="https://motocicletas.honda.com.co/images/svg/logo-footer.svg" alt="Honda Motos">
+        <img class="honda-logo" src="./assets/honda.svg" alt="Honda Motos">
       </div>
       <div>
         <h1>Meta Intelligence</h1>
@@ -32,7 +33,7 @@
       </div>
     </div>
 
-    <div class="nav" id="nav">
+    <nav class="nav" id="nav" aria-label="Navegación principal">
       <button class="active" data-section="overview"><span class="nav-icon">◫</span>Overview</button>
       <button data-section="modelsView"><span class="nav-icon">◈</span>Modelos</button>
       <button data-section="audiences"><span class="nav-icon">◎</span>Audiencias</button>
@@ -40,7 +41,7 @@
       <button data-section="creatives"><span class="nav-icon">▣</span>Creatividades</button>
       <button data-section="citiesView"><span class="nav-icon">⌖</span>Ciudades</button>
       <button data-section="data"><span class="nav-icon">▱</span>Data Health</button>
-    </div>
+    </nav>
 
     <div class="sidebar-bottom premium-sidebar-meta">
       <div class="side-meta-block"><span>Periodo actual</span><strong id="sidebarPeriod">—</strong></div>
@@ -66,7 +67,7 @@
         <div class="hero-copy">
           <div class="hero-brandline"><span>HONDA MOTOS COLOMBIA</span></div>
           <h2>Meta performance<br><span>command center</span></h2>
-          <p>Analiza el desempeño de tus campañas en Meta Ads por modelo, audiencia, ciudad y creativo. Data actualizada y lista para la toma de decisiones.</p>
+          <p>Conecta modelos, audiencias y resultados. Explora la inversión de Meta Ads con el snapshot del periodo indicado.</p>
           <div class="hero-period-pill">◷ <span id="heroPeriod">—</span></div>
         </div>
         <div class="hero-machine">
@@ -85,22 +86,23 @@
             <span>MODELOS</span>
             <strong>Selecciona una moto</strong>
           </div>
-          <button class="text-btn" id="clearModel">Ver portafolio completo</button>
+          <div class="rail-actions"><button class="text-btn" id="clearModel">Ver todos</button><button type="button" data-rail-direction="-1" aria-label="Modelos anteriores">←</button><button type="button" data-rail-direction="1" aria-label="Más modelos">→</button></div>
         </div>
         <div class="model-rail" id="modelRail"></div>
       </section>
 
       <div id="dashboard">
         <section class="filters-shell">
+          <div class="filter-heading"><span class="filter-summary" id="filterSummary" role="status" aria-live="polite">Preparando filtros…</span><button type="button" id="resetFilters" class="text-btn">Limpiar filtros ↺</button></div>
           <div class="filters">
-            <div class="field"><label>Modelo</label><select id="fModel"></select></div>
-            <div class="field"><label>Ciudad configurada</label><select id="fCity"></select></div>
-            <div class="field"><label>Campaña</label><select id="fCampaign"></select></div>
-            <div class="field"><label>Tipo audiencia</label><select id="fAudience"></select></div>
-            <div class="field"><label>Tipo de entrega</label><select id="fDelivery"></select></div>
-            <div class="field"><label>Desde</label><input type="date" id="fFrom"></div>
-            <div class="field"><label>Hasta</label><input type="date" id="fTo"></div>
-            <div class="field interest-field"><label>Buscar interés / behavior</label><input type="search" id="fInterest" placeholder="Honda, motos, delivery…"></div>
+            <div class="field"><label for="fModel">Modelo</label><select id="fModel"></select></div>
+            <div class="field"><label for="fCity">Ciudad configurada</label><select id="fCity"></select></div>
+            <div class="field"><label for="fCampaign">Campaña</label><select id="fCampaign"></select></div>
+            <div class="field"><label for="fAudience">Tipo audiencia</label><select id="fAudience"></select></div>
+            <div class="field"><label for="fDelivery">Tipo de entrega</label><select id="fDelivery"></select></div>
+            <div class="field"><label for="fFrom">Desde</label><input type="date" id="fFrom"></div>
+            <div class="field"><label for="fTo">Hasta</label><input type="date" id="fTo"></div>
+            <div class="field interest-field"><label for="fInterest">Buscar interés / behavior</label><input type="search" id="fInterest" placeholder="Honda, motos, delivery…"></div>
           </div>
           <div class="filters-foot">
             <div class="segment-pills" id="segmentPills">
@@ -111,9 +113,11 @@
               <button class="segpill" data-segment="Intereses">Intereses</button>
               <button class="segpill" data-segment="Broad">Broad</button>
             </div>
-            <div class="filter-note">ⓘ Ciudad filtra Ad Sets cuyo targeting incluye esa ciudad; no es un breakdown geográfico de entrega.</div>
+            <div class="filter-note">Ciudad selecciona Ad Sets que incluyen esa ubicación. El mapa estima un reparto uniforme; no mide entrega real por ciudad.</div>
           </div>
+          <p id="filterValidation" class="filter-validation" role="alert" hidden></p>
         </section>
+        <div id="viewError" class="view-error" role="alert" hidden><span id="viewErrorText"></span><button type="button" id="retryView">Reintentar</button></div>
 
         <section id="overview" class="section active">
           <div class="overview-city-kpis" id="overviewCityKpis"></div>
@@ -121,7 +125,7 @@
           <div class="overview-city-feature">
             <div class="panel overview-map-card">
               <div class="panel-head">
-                <div><div class="panel-title">Mapa de inversión por ciudad</div><div class="panel-note">Distribución estimada de inversión según ciudades incluidas en el targeting.</div></div>
+                <div><div class="panel-title">La inversión en el territorio</div><div class="panel-note">Selecciona una ubicación para filtrar el dashboard.</div></div>
                 <button class="mini-link" data-open-section="citiesView">Ver detalle →</button>
               </div>
               <div id="overviewCityMap" class="overview-city-map"></div>
@@ -129,10 +133,11 @@
 
             <div class="panel overview-ranking-card">
               <div class="panel-head">
-                <div><div class="panel-title">Top 5 ciudades por inversión</div><div class="panel-note">Ciudades con mayor participación en la inversión asociada.</div></div>
+                <div><div class="panel-title">Top 5 ubicaciones</div><div class="panel-note">Participación estimada de la inversión con ubicación configurada.</div></div>
                 <span class="panel-badge" id="overviewCityCount">0 ciudades</span>
               </div>
               <div id="overviewCityRanking" class="overview-city-ranking"></div>
+              <div class="geo-ranking-footer"><p>Elige una fila para aplicar el filtro de ciudad.</p><button type="button" class="mini-link" data-open-section="citiesView">Explorar todas las ubicaciones →</button></div>
             </div>
           </div>
 
@@ -142,7 +147,7 @@
           <div class="panel panel-chart premium-analytics-panel overview-trend-panel">
             <div class="panel-head">
               <div><div class="panel-title">Evolución de inversión, leads y CPL</div><div class="panel-note">Vista ponderada del performance según los filtros activos.</div></div>
-              <select id="trendGranularity" class="compact-select"><option value="month">Mensual</option><option value="day">Diario</option></select>
+              <select id="trendGranularity" aria-label="Agrupar evolución por" class="compact-select"><option value="month">Mensual</option><option value="day">Diario</option></select>
             </div>
             <div class="chartbox"><canvas id="trendChart"></canvas></div>
           </div>
@@ -214,8 +219,9 @@
         <section id="creatives" class="section">
           <div class="creative-header">
             <div><div class="eyebrow">CREATIVE LAB</div><h3>Anuncios que están moviendo el performance.</h3><p>Preview real de Meta, inversión, leads y eficiencia creativa.</p></div>
-            <select id="creativeSort" class="compact-select"><option value="spend">Mayor inversión</option><option value="leads">Mayor leads</option><option value="ctr">Mayor CTR</option><option value="cpl">Mejor CPL</option></select>
+            <select id="creativeSort" aria-label="Ordenar creatividades por" class="compact-select"><option value="spend">Mayor inversión</option><option value="leads">Mayor leads</option><option value="ctr">Mayor CTR</option><option value="cpl">Mejor CPL</option></select>
           </div>
+          <p class="creative-period-note">Las métricas de cada anuncio corresponden al snapshot completo. Los filtros seleccionan anuncios de Ad Sets con actividad en el periodo; el archivo no incluye métricas diarias por anuncio.</p>
           <div class="creative-grid" id="creativeGrid"></div>
           <div class="empty hidden" id="creativeEmpty"><b>No encontré creatividades para estos filtros.</b>Ajusta modelo, campaña o audiencia.</div>
         </section>
@@ -225,7 +231,7 @@
             <div>
               <div class="eyebrow">HONDA MOTOS COLOMBIA · META ADS</div>
               <h2>Mapa de inversión por ciudad</h2>
-              <p>Distribución estimada de la inversión asociada al targeting geográfico configurado en los Ad Sets.</p>
+              <p>Explora el territorio, acerca el mapa y selecciona una ubicación para conectar geografía y performance.</p>
             </div>
           </div>
 
@@ -234,22 +240,25 @@
           <div class="city-page-grid">
             <div class="panel city-page-map-panel">
               <div class="panel-head">
-                <div><div class="panel-title">Mapa de inversión por ciudad</div><div class="panel-note">Las burbujas representan el peso relativo de inversión.</div></div>
+                <div><div class="panel-title">Explorador geográfico</div><div class="panel-note">Los círculos con números agrupan ubicaciones cercanas.</div></div>
               </div>
               <div id="cityPageMap" class="city-page-map"></div>
             </div>
 
             <div class="panel city-ranking-panel">
               <div class="panel-head">
-                <div><div class="panel-title">Top ciudades por inversión</div><div class="panel-note">Ranking proporcional del targeting configurado.</div></div>
+                <div><div class="panel-title">Inversión por ubicación</div><div class="panel-note">Selecciona una fila para ver sus resultados.</div></div>
                 <span class="panel-badge" id="cityCountBadge">0 ciudades</span>
               </div>
-              <div class="city-ranking-head"><span>#</span><span>Ciudad</span><span>Inversión</span><span>% total</span></div>
+              <label class="visually-hidden" for="citySearch">Buscar una ubicación en el ranking</label><input type="search" id="citySearch" class="geo-search" placeholder="Buscar ubicación…">
+              <div class="city-ranking-head"><span>#</span><span>Ubicación</span><span>Inversión est.</span><span>%</span></div>
               <div id="cityRanking" class="city-ranking"></div>
+              <button type="button" id="showAllCities" class="geo-show-all">Ver todas las ubicaciones</button>
             </div>
           </div>
 
           <div class="city-bottom-kpis" id="cityBottomKpis"></div>
+          <details class="geo-method"><summary>Cómo leer el mapa y la inversión</summary><p>La inversión de cada Ad Set se reparte en partes iguales entre sus ubicaciones configuradas. Es una estimación de targeting, no un reporte de entrega ni de ventas por ciudad. Al seleccionar una ciudad, las otras vistas muestran el performance completo de los Ad Sets que la incluyen.</p><p>Los nombres ambiguos o sin coordenadas identificadas permanecen en el listado. Solo se dibujan coincidencias únicas con cabeceras municipales del catálogo <a href="https://www.geonames.org/" target="_blank" rel="noopener">GeoNames</a> (CC BY 4.0). Contorno continental simplificado; no muestra radios de cobertura.</p></details>
         </section>
 
         <section id="data" class="section">
@@ -270,5 +279,8 @@
 <script src="./app-overview.js"></script>
 <script src="./app-detail.js"></script>
 <script src="./app-creatives.js"></script>
+<script src="./geo-data.js"></script>
+<script src="./app-map.js"></script>
+<script src="./app-nav.js"></script>
 </body>
 </html>
