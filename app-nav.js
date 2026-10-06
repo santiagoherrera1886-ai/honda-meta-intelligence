@@ -60,7 +60,7 @@ function setupNav(){
     const segment=event.target.closest('[data-segment]');
     if(segment){state.segment=segment.dataset.segment;renderAll();return;}
     const railControl=event.target.closest('[data-rail-direction]');
-    if(railControl){$('#modelRail').scrollBy({left:Number(railControl.dataset.railDirection)*430,behavior:'smooth'});return;}
+    if(railControl){moveModelRail(Number(railControl.dataset.railDirection));return;}
     const retry=event.target.closest('#retryView');
     if(retry){if(state.ready)renderAll();else location.reload();return;}
     handleMapAction(event);
@@ -73,6 +73,8 @@ function setupNav(){
   $('#citySearch').addEventListener('input',()=>renderCityRanking());
   window.addEventListener('popstate',()=>switchSection(location.hash.slice(1),{hash:false}));
   window.addEventListener('hashchange',()=>switchSection(location.hash.slice(1),{hash:false}));
+  $('#modelRail').addEventListener('scroll',updateRailControls,{passive:true});
+  window.addEventListener('resize',debounce(updateRailControls,100));
   setupMapDragging();
   switchSection(location.hash.slice(1),{hash:false,scroll:false,render:false});
 }

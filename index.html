@@ -9,6 +9,7 @@
   <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
   <link rel="stylesheet" href="./styles.css">
   <link rel="stylesheet" href="./workspace.css">
+  <link rel="stylesheet" href="./showroom.css">
 </head>
 <body>
 <div class="loading show" id="loading">
@@ -65,17 +66,18 @@
     <div class="content">
       <section class="hero">
         <div class="hero-copy">
-          <div class="hero-brandline"><span>HONDA MOTOS COLOMBIA</span></div>
-          <h2>Meta performance<br><span>command center</span></h2>
-          <p>Conecta modelos, audiencias y resultados. Explora la inversión de Meta Ads con el snapshot del periodo indicado.</p>
-          <div class="hero-period-pill">◷ <span id="heroPeriod">—</span></div>
+          <div class="hero-brandline"><span class="hero-live-mark"></span><span>INTELIGENCIA DE PERFORMANCE</span></div>
+          <h2>El rendimiento<br>de cada <span>Honda.</span></h2>
+          <p>Tu portafolio, en perspectiva. Conecta cada modelo con su inversión, sus audiencias y sus resultados.</p>
+          <div class="hero-actions"><button type="button" class="hero-primary" data-open-section="modelsView">Explorar modelos <span aria-hidden="true">↗</span></button><div class="hero-period-pill"><span id="heroPeriod">—</span></div></div>
         </div>
         <div class="hero-machine">
-          <div class="hero-glow"></div>
+          <span class="hero-watermark" aria-hidden="true">HONDA</span>
+          <div class="hero-category" id="heroCategory">SPORT</div>
           <div class="hero-bike" id="heroBike"></div>
           <div class="hero-model-label">
-            <span>MODELO HONDA ACTIVO</span>
-            <strong id="heroModelName">PORTAFOLIO HONDA</strong>
+            <div><span id="heroModelContext">MODELO CON MAYOR INVERSIÓN</span><strong id="heroModelName">HONDA</strong></div>
+            <small>Imagen de referencia Honda</small>
           </div>
         </div>
       </section>
@@ -83,12 +85,12 @@
       <section class="models-shell" id="models">
         <div class="section-caption">
           <div>
-            <span>MODELOS</span>
-            <strong>Selecciona una moto</strong>
+            <span>EXPLORA EL PORTAFOLIO</span>
+            <strong>Una moto. Todos sus resultados.</strong>
           </div>
-          <div class="rail-actions"><button class="text-btn" id="clearModel">Ver todos</button><button type="button" data-rail-direction="-1" aria-label="Modelos anteriores">←</button><button type="button" data-rail-direction="1" aria-label="Más modelos">→</button></div>
+          <div class="rail-actions"><span id="modelRailCount" class="rail-count"></span><button type="button" class="text-btn" id="clearModel">Ver todos</button><button type="button" data-rail-direction="-1" aria-label="Modelos anteriores">←</button><button type="button" data-rail-direction="1" aria-label="Más modelos">→</button></div>
         </div>
-        <div class="model-rail" id="modelRail"></div>
+        <div class="model-rail" id="modelRail" aria-label="Seleccionar modelo Honda"></div>
       </section>
 
       <div id="dashboard">
@@ -120,6 +122,17 @@
         <div id="viewError" class="view-error" role="alert" hidden><span id="viewErrorText"></span><button type="button" id="retryView">Reintentar</button></div>
 
         <section id="overview" class="section active">
+          <div class="kpis" id="kpis"></div>
+          <div class="insights" id="insights"></div>
+
+          <div class="panel panel-chart premium-analytics-panel overview-trend-panel">
+            <div class="panel-head">
+              <div><div class="panel-title">Evolución de inversión, leads y CPL</div><div class="panel-note">Vista ponderada del performance según los filtros activos.</div></div>
+              <select id="trendGranularity" aria-label="Agrupar evolución por" class="compact-select"><option value="month">Mensual</option><option value="day">Diario</option></select>
+            </div>
+            <div class="chartbox"><canvas id="trendChart"></canvas></div>
+          </div>
+
           <div class="geo-data-note"><b>Geografía cruzada con el Excel</b><span>El mapa muestra ciudades configuradas. Los importes corresponden al gasto completo de los conjuntos asociados; no se reparten ni se suman entre ciudades.</span></div>
           <div class="overview-city-kpis" id="overviewCityKpis"></div>
 
@@ -144,17 +157,6 @@
           </div>
 
           <div class="panel geo-trace" id="overviewGeoTrace"></div>
-
-          <div class="kpis" id="kpis"></div>
-          <div class="insights" id="insights"></div>
-
-          <div class="panel panel-chart premium-analytics-panel overview-trend-panel">
-            <div class="panel-head">
-              <div><div class="panel-title">Evolución de inversión, leads y CPL</div><div class="panel-note">Vista ponderada del performance según los filtros activos.</div></div>
-              <select id="trendGranularity" aria-label="Agrupar evolución por" class="compact-select"><option value="month">Mensual</option><option value="day">Diario</option></select>
-            </div>
-            <div class="chartbox"><canvas id="trendChart"></canvas></div>
-          </div>
 
           <div class="grid-3 premium-lower-grid">
             <div class="panel"><div class="panel-head"><div><div class="panel-title">Performance por modelo</div><div class="panel-note">Leads por modelo.</div></div></div><div class="chartbox sm"><canvas id="modelChart"></canvas></div></div>

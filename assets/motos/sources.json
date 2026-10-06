@@ -1,0 +1,122 @@
+[
+  {
+    "file": "cb100.png",
+    "url": "https://motocicletas.honda.com.co/images/cms/cb-100-gris.png",
+    "bytes": 218061,
+    "sha256": "a2dcf9633e5e1fb631043602fa745f52cb1719a85925506f37fc545d636cbd03",
+    "retrieved": "2026-10-06",
+    "original_bytes": true
+  },
+  {
+    "file": "cb125f.png",
+    "url": "https://motocicletas.honda.com.co/images/cms/honda-cb125f-20-std-rojo1.png",
+    "bytes": 730750,
+    "sha256": "59d0e13f1b4973e9b33c826cdc6ee804135aa446febf132ab694782fb8f6bd32",
+    "retrieved": "2026-10-06",
+    "original_bytes": true
+  },
+  {
+    "file": "x-blade.png",
+    "url": "https://motocicletas.honda.com.co/images/cms/xblade160-rojo.jpg",
+    "bytes": 832171,
+    "sha256": "fe67a767cd5abc434966b5d0655e09fbabc0e02e6760870b576e987ab7e9f64c",
+    "retrieved": "2026-10-06",
+    "original_bytes": true
+  },
+  {
+    "file": "cb190r.png",
+    "url": "https://motocicletas.honda.com.co/images/cms/honda-cb190r-gris.png",
+    "bytes": 182802,
+    "sha256": "7baf75b905bb56c684c72d4347861fb3fa1c2d2183b3dee52932e3f08d26beb9",
+    "retrieved": "2026-10-06",
+    "original_bytes": true
+  },
+  {
+    "file": "nx190.png",
+    "url": "https://motocicletas.honda.com.co/images/cms/honda-nx190-negro-nueva.png",
+    "bytes": 542083,
+    "sha256": "38e08018c6e7cf4a8d3a2f40147c17f63139f6180637445e44ae83f485a84d3a",
+    "retrieved": "2026-10-06",
+    "original_bytes": true
+  },
+  {
+    "file": "cb300f.png",
+    "url": "https://motocicletas.honda.com.co/images/cms/Nueva-CB-300F-rojo.png",
+    "bytes": 712469,
+    "sha256": "41acffe1413b599a9d160e48fe5224f43c260fa1c891084fc1db2e8477757d01",
+    "retrieved": "2026-10-06",
+    "original_bytes": true
+  },
+  {
+    "file": "xr150l.png",
+    "url": "https://motocicletas.honda.com.co/images/cms/XR150L-20-blanco-version.png",
+    "bytes": 167431,
+    "sha256": "cdfef42ec225e816d8f0f8628f6bc9d027b30d743423d23ac057925d49a2e4b4",
+    "retrieved": "2026-10-06",
+    "original_bytes": true
+  },
+  {
+    "file": "xr190l.png",
+    "url": "https://motocicletas.honda.com.co/images/cms/nueva-xr190l-abs-20-blanca.png",
+    "bytes": 766126,
+    "sha256": "538f57f908e412d88d0333dd905f1486d6f7b5073df624e293a78d0c8755a038",
+    "retrieved": "2026-10-06",
+    "original_bytes": true
+  },
+  {
+    "file": "dio.png",
+    "url": "https://motocicletas.honda.com.co/images/cms/nueva-dio-std-azul.png",
+    "bytes": 129879,
+    "sha256": "b354f6b0c7ca87039b9d5ff49fc60eec3097dfbbf3cef5aee5c8f780b90d5f19",
+    "retrieved": "2026-10-06",
+    "original_bytes": true
+  },
+  {
+    "file": "dio-dlx.png",
+    "url": "https://motocicletas.honda.com.co/images/cms/nueva-dio-dlx-gris.png",
+    "bytes": 147940,
+    "sha256": "777624c788442b133d934d9cd14571c7e4b86cd84cb1934e7415822c909f89dd",
+    "retrieved": "2026-10-06",
+    "original_bytes": true
+  },
+  {
+    "file": "wave.png",
+    "url": "https://motocicletas.honda.com.co/images/cms/nueva-honda-wave-110-gris.png",
+    "bytes": 149165,
+    "sha256": "11a08c91fb667e6ef335e88e542539d2dc6315a40a5c5492c5fb4b52dbb633bc",
+    "retrieved": "2026-10-06",
+    "original_bytes": true
+  },
+  {
+    "file": "pcx160.png",
+    "url": "https://motocicletas.honda.com.co/images/cms/Gris-1.png",
+    "bytes": 1034089,
+    "sha256": "bbb061191e2be6e63df5c9f123a94f1d8bd9eb7b50f11bfaab2365b839726c8f",
+    "retrieved": "2026-10-06",
+    "original_bytes": true
+  },
+  {
+    "file": "navi.png",
+    "url": "https://motocicletas.honda.com.co/images/cms/navi-rojo-n.png",
+    "bytes": 307487,
+    "sha256": "e576ca1e080f18246950dafb07f1e990706988e7bc0dc124db9b47c91cf88b1e",
+    "retrieved": "2026-10-06",
+    "original_bytes": true
+  },
+  {
+    "file": "nt1100.png",
+    "url": "https://motocicletas.honda.com.co/images/cms/nt-1100-beige.png",
+    "bytes": 123861,
+    "sha256": "1245b1da5aab09451c9b668098c649f73ca33e9d814fc131f579be3db89d0031",
+    "retrieved": "2026-10-06",
+    "original_bytes": true
+  },
+  {
+    "file": "honda-dream.png",
+    "url": "https://motocicletas.honda.com.co/images/cms/ETIQUETA_HD_BLANCA-ae220-3a954.png",
+    "bytes": 5675,
+    "sha256": "6b61af8c66bd0d85b7b40beb3c67fda6089ee4c1fcbfdfdc38465a62352508d3",
+    "retrieved": "2026-10-06",
+    "original_bytes": true
+  }
+]

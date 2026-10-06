@@ -15,3 +15,11 @@ Investment values come from the existing snapshot. Each Ad Set's investment is s
 `geo-targeting.js` is now the authoritative geography source. It uses Meta geographic IDs and departments from the uploaded Excel, preserving 303 city identities. GeoNames matching uses canonical department names, then primary city names (falling back to alternate names) within that department. 259 included cities have a unique coordinate match. This resolves the three distinct Nariño municipalities; it does not infer actual delivery. The old `city-coordinates.json` and `CITY_COORDINATES` constant are retained as historical unused inputs.
 
 No equal-share allocation is used anymore. The UI shows Ad Set associations and preserves their full shared spend, explicitly non-additive across city rows. All location types are retained, including regions, countries, subcities, neighborhoods and places. See `docs/GEO_RECONCILIATION.md` for financial checks and source hash.
+
+## Motorcycle reference photography · October 2026
+
+`assets/motos/` contains 14 official Honda Colombia motorcycle reference photographs and the Honda Dream brand mark, downloaded unchanged from the product catalogue at https://motocicletas.honda.com.co/ . Individual URLs, retrieval dates and SHA-256 hashes are recorded in `assets/motos/sources.json`. `x-blade.png` is the original PNG served by Honda under a `.jpg` URL; only its filename extension was corrected.
+
+Images are local assets (no remote hotlinks), preserve their original transparency and are displayed with `object-fit: contain`. Current catalogue photographs illustrate the model family; colors/equipment/model years may differ from the historical campaign. DIO and DIO DLX use different matching product photographs.
+
+DREAM is displayed as a brand campaign grouping with the official Honda Dream mark. Its snapshot rows include Honda Dream branding, XADV and Sahara Ad Sets; a Dream Neo motorcycle photograph would not represent that grouping. Existing model classification and financial records are unchanged. The NT1100 photograph and Honda Dream mark were obtained from https://motocicletas.honda.com.co/motos-honda/aventura/NT-1100 .

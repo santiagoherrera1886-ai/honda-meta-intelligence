@@ -216,109 +216,52 @@ function renderAll(){
   renderActiveSection();
 }
 
+// Official reference photographs, stored locally so cards do not depend on hotlinks.
 const MODEL_ASSETS={
-  'CB100':{
-    img:'https://motocicletas.honda.com.co/images/cms/cb-100-gris.png',
-    label:'CB 100'
-  },
-  'CB125F':{
-    img:'https://d3lewjhzzgclom.cloudfront.net/sites/default/files/csv_import/images/honda-cb125f-20-std-rojo1_3.png',
-    fallbacks:[
-      'https://motocicletas.honda.com.co/images/cms/cb125f-rojo.png',
-      'https://motocicletas.honda.com.co/images/cms/cb125f.png'
-    ],
-    label:'CB 125F'
-  },
-  'PCX160':{
-    img:'https://motocicletas.honda.com.co/images/cms/Azul-8194f.png',
-    label:'PCX 160 ABS'
-  },
-  'CB300F':{
-    img:'https://motocicletas.honda.com.co/images/cms/Nueva-CB-300F-rojo.png',
-    label:'CB 300F'
-  },
-  'XR150L':{
-    img:'https://d3lewjhzzgclom.cloudfront.net/sites/default/files/csv_import/images/XR150L-20-blanco-version_3.png',
-    fallbacks:[
-      'https://motocicletas.honda.com.co/images/cms/xr150l-blanca.png',
-      'https://motocicletas.honda.com.co/images/cms/xr150l.png'
-    ],
-    label:'XR 150L'
-  },
-  'XR190L':{
-    img:'https://tienda.honda.com.co/dw/image/v2/BFKT_PRD/on/demandware.static/-/Sites-FanalcaSA_CO-catalog/default/dw41660fb4/images/large/nueva-honda-xr190l-20-ecommerce.jpg?sh=550&sm=fit&sw=550',
-    label:'XR 190L'
-  },
-  'WAVE':{
-    img:'https://d3lewjhzzgclom.cloudfront.net/sites/default/files/csv_import/images/nueva-honda-wave-110-negra3_3.png',
-    fallbacks:[
-      'https://motocicletas.honda.com.co/images/cms/nueva-honda-wave-110-negra3.png',
-      'https://motocicletas.honda.com.co/images/cms/wave-110s-negra.png'
-    ],
-    label:'WAVE 110S'
-  },
-  'DIO DLX':{
-    img:'https://motocicletas.honda.com.co/images/cms/nueva-dio-dlx-gris.png',
-    label:'DIO LED DLX'
-  },
-  'DIO':{
-    img:'https://motocicletas.honda.com.co/images/cms/nueva-dio-dlx-gris.png',
-    label:'DIO'
-  }
+  'CB100':{img:'./assets/motos/cb100.png',label:'CB 100',family:'Sport'},
+  'CB125F':{img:'./assets/motos/cb125f.png',label:'CB 125F',family:'Sport'},
+  'PCX160':{img:'./assets/motos/pcx160.png',label:'PCX 160 ABS',family:'Scooter'},
+  'CB300F':{img:'./assets/motos/cb300f.png',label:'CB 300F',family:'Sport'},
+  'XR150L':{img:'./assets/motos/xr150l.png',label:'XR 150L',family:'Todo terreno'},
+  'XR190L':{img:'./assets/motos/xr190l.png',label:'XR 190L',family:'Todo terreno'},
+  'WAVE':{img:'./assets/motos/wave.png',label:'WAVE 110S',family:'Semiautomática'},
+  'DIO DLX':{img:'./assets/motos/dio-dlx.png',label:'DIO DLX',family:'Scooter'},
+  'DIO':{img:'./assets/motos/dio.png',label:'DIO',family:'Scooter'},
+  'X-BLADE':{img:'./assets/motos/x-blade.png',label:'X-BLADE 160',family:'Sport'},
+  'NAVI':{img:'./assets/motos/navi.png',label:'NAVI',family:'Navi'},
+  'CB190R':{img:'./assets/motos/cb190r.png',label:'CB 190R',family:'Sport'},
+  'NX190':{img:'./assets/motos/nx190.png',label:'NX 190',family:'Adventure'},
+  'NT1100':{img:'./assets/motos/nt1100.png',label:'NT 1100',family:'Touring'},
+  'DREAM':{img:'./assets/motos/honda-dream.png',label:'Honda Dream',family:'Línea de marca',kind:'brand'}
 };
-
-function modelAsset(name){
-  return MODEL_ASSETS[name]||{label:name,img:''};
-}
+function modelAsset(name){return MODEL_ASSETS[name]||{label:name,img:'',family:'Honda'};}
 function hondaBikeFallback(img){
-  const name=img.dataset.model||'';
-  const asset=modelAsset(name);
-  const fallbacks=asset.fallbacks||[];
-  const index=Number(img.dataset.fallbackIndex||0);
-
-  if(index<fallbacks.length){
-    img.dataset.fallbackIndex=String(index+1);
-    img.src=fallbacks[index];
-    return;
-  }
-
-  img.style.display='none';
+  img.hidden=true;
   const fallback=img.parentElement?.querySelector('.bike-fallback');
-  if(fallback) fallback.classList.add('show');
+  if(fallback)fallback.classList.add('show');
 }
-
 function bikeMedia(name,hero=false){
   const asset=modelAsset(name);
-  return `<div class="real-bike ${hero?'real-bike-hero':''}">
-    <div class="bike-orbit"></div>
-    <div class="bike-stage"></div>
-    ${asset.img?`<img src="${escapeAttr(asset.img)}"
-      data-model="${escapeAttr(name)}"
-      data-fallback-index="0"
-      alt="Honda ${escapeAttr(asset.label)}"
-      loading="${hero?'eager':'lazy'}"
+  return `<div class="real-bike ${hero?'real-bike-hero':''} ${asset.kind==='brand'?'brand-media':''}">
+    ${asset.img?`<img src="${escapeAttr(asset.img)}" data-model="${escapeAttr(name)}"
+      alt="${asset.kind==='brand'?'Identidad de Honda Dream':'Honda '+escapeAttr(asset.label)}"
+      loading="${hero?'eager':'lazy'}" decoding="async" ${hero?'fetchpriority="high"':''}
       onerror="hondaBikeFallback(this)">`:''}
-    <div class="bike-fallback ${asset.img?'':'show'}">
-      <span>HONDA</span>
-      <strong>${escapeHtml(asset.label||name)}</strong>
-      <small>Imagen oficial no disponible</small>
-    </div>
-    <div class="bike-specular"></div>
+    ${asset.kind==='brand'?'<span class="brand-media-caption">Campañas de marca</span>':''}
+    <div class="bike-fallback ${asset.img?'':'show'}"><span>HONDA</span><strong>${escapeHtml(asset.label||name)}</strong><small>Fotografía no disponible</small></div>
   </div>`;
 }
 function modelCardMarkup(m,i,current){
-  const asset=modelAsset(m.key);
-  return `<button type="button" class="model-card premium-model ${current===m.key?'active':''}" data-model="${escapeAttr(m.key)}" aria-pressed="${current===m.key}" aria-label="Filtrar por ${escapeAttr(asset.label||m.key)}" style="--delay:${i*20}ms">
-    <div class="model-card-top">
-      <span>${escapeHtml(asset.label||m.key)}</span>
-      <small>${fmtMoney.format(m.spend)}</small>
-    </div>
-    <div class="model-art">${bikeMedia(m.key,false)}</div>
+  const asset=modelAsset(m.key),active=current===m.key;
+  return `<button type="button" class="model-card premium-model ${active?'active':''} ${asset.kind==='brand'?'brand-card':''}"
+    data-model="${escapeAttr(m.key)}" aria-pressed="${active}" aria-label="Filtrar por ${escapeAttr(asset.label||m.key)}">
+    <div class="model-card-top"><div><small>${escapeHtml(asset.family)}</small><span>${escapeHtml(asset.label||m.key)}</span></div><span class="model-select-mark" aria-hidden="true">${active?'✓':'↗'}</span></div>
+    <div class="model-art">${bikeMedia(m.key)}</div>
     <div class="model-card-foot">
-      <b>${fmtNum.format(m.leads)}</b><span>leads</span>
-      <i>${m.leads?fmtMoney.format(m.cpl):'—'} CPL</i>
+      <div class="model-spend"><span>Inversión</span><b>${fmtMoney.format(m.spend)}</b></div>
+      <div><span>Leads</span><b>${fmtNum.format(m.leads)}</b></div>
+      <div><span>CPL</span><b>${m.leads?fmtMoney.format(m.cpl):'—'}</b></div>
     </div>
-    <div class="official-chip">HONDA · MODELO REAL</div>
   </button>`;
 }
 function selectHondaModel(model){
@@ -331,16 +274,38 @@ function renderModelRail(){
   const current=$('#fModel').value;
   const filteredStats=new Map(groupBy(filterData(true),r=>r.__model).map(x=>[x.key,x]));
   const models=(state.modelStats||[]).map(m=>filteredStats.get(m.key)||{key:m.key,...agg([])});
-  const markup=models.map((m,i)=>modelCardMarkup(m,i,current)).join('');
   const rail=state.view==='modelsView'?$('#modelRailPage'):$('#modelRail');
-  if(rail){const position=rail.scrollLeft;rail.innerHTML=markup;rail.scrollLeft=position;}
+  if(rail){
+    const position=rail.scrollLeft,focused=rail.contains(document.activeElement)?document.activeElement.dataset.model:null;
+    rail.innerHTML=models.map((m,i)=>modelCardMarkup(m,i,current)).join('');
+    rail.scrollLeft=position;
+    if(focused)[...rail.children].find(card=>card.dataset.model===focused)?.focus({preventScroll:true});
+  }
+  if($('#modelRailCount'))$('#modelRailCount').textContent=`${models.filter(m=>modelAsset(m.key).kind!=='brand').length} motos · ${models.filter(m=>modelAsset(m.key).kind==='brand').length} línea de marca`;
+  updateRailControls();
+}
+function updateRailControls(){
+  const rail=$('#modelRail');
+  if(!rail||!rail.clientWidth)return;
+  $$('[data-rail-direction]').forEach(button=>{
+    button.disabled=Number(button.dataset.railDirection)<0?rail.scrollLeft<=2:rail.scrollLeft+rail.clientWidth>=rail.scrollWidth-2;
+  });
+}
+function moveModelRail(direction){
+  const rail=$('#modelRail'),card=rail?.querySelector('.model-card');
+  if(!card)return;
+  const step=card.getBoundingClientRect().width+parseFloat(getComputedStyle(rail).columnGap||0);
+  const count=Math.max(1,Math.floor((rail.clientWidth+16)/step));
+  const target=(Math.round(rail.scrollLeft/step)+direction*count)*step;
+  rail.scrollTo({left:target,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
 }
 function updateHero(){
   const selected=$('#fModel').value;
-  const top=groupBy(state.current,r=>r.__model).filter(x=>x.key!=='OTRO / SIN CLASIFICAR').sort((a,b)=>b.spend-a.spend)[0];
-  const display=selected||top?.key||'CB300F';
-  const asset=modelAsset(display);
-  $('#heroModelName').textContent=selected?(asset.label||display):'PORTAFOLIO HONDA';
+  const top=groupBy(state.current,r=>r.__model).filter(x=>MODEL_ASSETS[x.key]?.kind!=='brand'&&MODEL_ASSETS[x.key]).sort((a,b)=>b.spend-a.spend)[0];
+  const display=selected||top?.key||'CB300F',asset=modelAsset(display);
+  $('#heroModelName').textContent=asset.label||display;
+  $('#heroModelContext').textContent=selected?'SELECCIÓN ACTUAL':top?'MODELO CON MAYOR INVERSIÓN':'EXPLORA EL PORTAFOLIO';
+  $('#heroCategory').textContent=asset.family;
   if($('#heroBike').dataset.model!==display){
     $('#heroBike').innerHTML=bikeMedia(display,true);
     $('#heroBike').dataset.model=display;

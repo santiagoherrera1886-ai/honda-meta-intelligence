@@ -9,7 +9,7 @@ La data ya está integrada dentro del proyecto como snapshot optimizado, por lo 
 ## Incluye
 
 - Filtro por modelo de moto.
-- Selector visual de 15 modelos con imágenes oficiales disponibles y una ficha identificada cuando falta la imagen.
+- Selector visual con 14 fotografías oficiales de motos y la identidad de Honda Dream para su agrupación de campañas. Los recursos están incluidos en el proyecto.
 - Navegación lateral y móvil sincronizada, enlaces directos y botones Atrás/Adelante del navegador.
 - Filtro por ciudad configurada en el targeting del Ad Set.
 - Filtro por campaña, tipo de audiencia, tipo de entrega y fechas.
@@ -54,3 +54,9 @@ El alcance diario no es aditivo entre fechas. Una misma persona puede aparecer e
 `geo-targeting.js` conserva identificadores, departamentos, tipos de ubicación, exclusiones y radios del JSON original de Meta para los 244 conjuntos con segmentación. No modifica el snapshot financiero. El cruce de las 31.045 filas se reproduce con `python scripts/reconcile_geography.py archivo.xlsx CO.zip` (requiere openpyxl y el catálogo GeoNames de Colombia).
 
 Detalle: [docs/GEO_RECONCILIATION.md](docs/GEO_RECONCILIATION.md). Pruebas sin dependencias: `node --test tests/geography.test.cjs`.
+
+## Visual del portafolio
+
+`showroom.css` define el banner de fondo claro, las tarjetas con fotografías completas y las adaptaciones de escritorio/móvil. El carrusel se desplaza por tarjetas completas, conserva la selección y desactiva las flechas en los extremos. El botón «Explorar modelos» abre la comparativa; cada tarjeta actualiza el filtro y la imagen del banner. Inversión, leads, CPL y evolución aparecen antes del bloque geográfico.
+
+Las fotografías se conservan sin edición y se documentan en `assets/motos/sources.json`; no dependen de enlaces externos en tiempo de ejecución.
